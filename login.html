@@ -5,34 +5,43 @@
     <meta content="width=device-width, initial-scale=1" name="viewport"/>
     <title>Login - HIMPESDA</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/style.css"/>
+    <style>
+      /* Menggunakan variabel warna dari style.css untuk konsistensi */
+      :root {
+        --blue-dark: #0b2545;
+        --yellow-light: #fff9db;
+        --sky-light: #e0f2fe; /* Biru langit yang sangat muda */
+      }
+    </style>
 </head>
-<body>
+<body class="min-h-screen flex items-center justify-center bg-gradient-to-br from-[var(--yellow-light)] to-[var(--sky-light)] font-sans">
 
-  <div class="login-container">
-    <div class="login-card">
-        <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-[var(--blue-dark)]">Login Anggota</h1>
-            <p class="text-gray-500 mt-2">Selamat datang kembali!</p>
+  <div class="w-full max-w-sm mx-auto p-4">
+    <div class="bg-white rounded-2xl shadow-xl px-8 py-10">
+        
+        <div class="w-20 h-20 mx-auto bg-gray-200 rounded-full flex items-center justify-center mb-8">
+            <span class="text-xs text-gray-500">Logo</span>
         </div>
+        
         <form action="#" method="POST" class="space-y-6">
             <div>
-                <label for="email" class="block mb-2 font-semibold text-sm">Email</label>
-                <input type="email" id="email" name="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--yellow-accent)]" required>
+                <label for="identifier" class="block mb-2 font-semibold text-sm text-[var(--blue-dark)]">
+                    Email atau Nomor Anggota
+                </label>
+                <input type="text" id="identifier" name="identifier" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
             </div>
+            
             <div>
-                <label for="password" class="block mb-2 font-semibold text-sm">Password</label>
-                <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--yellow-accent)]" required>
+                <label for="password" class="block mb-2 font-semibold text-sm text-[var(--blue-dark)]">
+                    Password
+                </label>
+                <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-yellow-400" required>
             </div>
-            <div class="flex items-center justify-between">
-                <a href="#" class="text-sm text-[var(--blue-dark)] hover:underline">Lupa password?</a>
-            </div>
-            <div>
-                <button type="submit" class="w-full bg-[var(--blue-dark)] text-white font-semibold py-3 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
-                    Login
+
+            <div class="pt-4">
+                <button type="submit" class="w-full bg-[var(--blue-dark)] text-yellow-300 font-semibold py-3 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
+                    Login Sekarang
                 </button>
             </div>
         </form>
