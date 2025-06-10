@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1" name="viewport"/>
+    <title>Login - HIMPESDA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="login-container">
+    <div class="login-card">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-[var(--blue-dark)]">Login Anggota</h1>
+            <p class="text-gray-500 mt-2">Selamat datang kembali!</p>
+        </div>
+        <form action="#" method="POST" class="space-y-6">
+            <div>
+                <label for="email" class="block mb-2 font-semibold text-sm">Email</label>
+                <input type="email" id="email" name="email" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--yellow-accent)]" required>
+            </div>
+            <div>
+                <label for="password" class="block mb-2 font-semibold text-sm">Password</label>
+                <input type="password" id="password" name="password" class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--yellow-accent)]" required>
+            </div>
+            <div class="flex items-center justify-between">
+                <a href="#" class="text-sm text-[var(--blue-dark)] hover:underline">Lupa password?</a>
+            </div>
+            <div>
+                <button type="submit" class="w-full bg-[var(--blue-dark)] text-white font-semibold py-3 px-4 rounded-lg hover:bg-opacity-90 transition-colors">
+                    Login
+                </button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+</body>
+</html>

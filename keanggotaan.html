@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Keanggotaan - HIMPESDA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="styles/all.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-[var(--blue-dark)]">
+
+  <main class="max-w-7xl mx-auto px-6 py-16">
+    <div class="max-w-3xl mx-auto text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Gabung Bersama Kami</h1>
+        <p class="text-lg text-[var(--blue-dark)]/80 mb-10">Isi formulir berikut untuk menjadi anggota HIMPESDA dan berkontribusi dalam komunitas kami.</p>
+    </div>
+    
+    <section class="fade-in-section" id="daftar">
+       <form action="#" class="max-w-2xl mx-auto bg-white p-8 rounded-xl shadow-lg space-y-6" method="POST">
+        <div>
+         <label class="block mb-2 font-semibold" for="nama">Nama Lengkap</label>
+         <input class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--yellow-accent)]" id="nama" name="nama" type="text" required/>
+        </div>
+        <div>
+         <label class="block mb-2 font-semibold" for="email">Email</label>
+         <input class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--yellow-accent)]" id="email" name="email" type="email" required/>
+        </div>
+        <div>
+         <label class="block mb-2 font-semibold" for="telepon">Nomor Telepon</label>
+         <input class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--yellow-accent)]" id="telepon" name="telepon" type="tel" required/>
+        </div>
+        <div>
+         <label class="block mb-2 font-semibold" for="alamat">Alamat</label>
+         <textarea class="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-[var(--yellow-accent)]" id="alamat" name="alamat" rows="3" required></textarea>
+        </div>
+        <button class="bg-[var(--blue-dark)] text-white font-semibold px-6 py-3 rounded-lg hover:bg-opacity-90 transition w-full" type="submit">
+         Kirim Pendaftaran
+        </button>
+       </form>
+    </section>
+  </main>
+  
+  <footer class="footer mt-20" id="footer-tentang">
+     </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
