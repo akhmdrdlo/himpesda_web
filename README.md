@@ -1,61 +1,131 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# Sistem Informasi Manajemen Anggota & Berita HIMPESDA
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi web full-stack yang dibangun menggunakan Laravel untuk mengelola keanggotaan, berita, dan informasi organisasi HIMPESDA. Aplikasi ini memiliki dua bagian utama: halaman publik informatif untuk pengunjung dan dasbor admin yang aman untuk manajemen data.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Fitur Utama
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### Halaman Publik (User View)
+- **Beranda Dinamis:** Menampilkan profil singkat dan berita terbaru langsung dari database.
+- **Halaman Profil:** Halaman terpisah untuk Sejarah, Visi & Misi, dan Struktur Organisasi yang datanya dikelola dari dasbor.
+- **Arsip Berita:** Daftar semua berita dengan sistem paginasi.
+- **Detail Berita:** Halaman khusus untuk membaca isi lengkap setiap artikel.
+- **Formulir Pendaftaran:** Form permohonan keanggotaan dengan validasi dan upload file bukti pembayaran.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+### Sistem Autentikasi
+- Dibangun di atas **Laravel Breeze** untuk keamanan dan kelengkapan.
+- Halaman Login, Register, dan Lupa Password yang fungsional.
+- Verifikasi email dan proteksi route.
 
-## Learning Laravel
+### Dasbor Admin (Admin View)
+- **Dasbor Utama:** Menampilkan statistik anggota dan organisasi dalam bentuk grafik (Chart.js).
+- **Manajemen Anggota:**
+    - Menampilkan daftar anggota aktif dengan tabel interaktif (DataTables.net).
+    - Fitur **Import Anggota** dari file Excel.
+    - Halaman detail untuk setiap anggota.
+    - Fitur Cetak Kartu Tanda Anggota (KTA) dengan desain vertikal.
+- **Manajemen Berita (CRUD):**
+    - Fungsionalitas penuh untuk Tambah, Edit, dan Hapus berita.
+    - Tampilan berita disesuaikan berdasarkan hak akses pengguna.
+- **Verifikasi Pendaftar:** Halaman khusus untuk admin/bendahara mengonfirmasi pendaftar baru dan mempromosikannya menjadi anggota aktif.
+- **Manajemen Profil & Organisasi:**
+    - Halaman khusus untuk admin mengedit profil pribadinya.
+    - Halaman khusus untuk admin mengedit informasi utama organisasi.
+- **Hak Akses Berbasis Peran (Role-Based Access):**
+    - **Admin:** Akses penuh ke semua fitur.
+    - **Operator:** Bisa mengelola berita.
+    - **Bendahara:** Bisa mengakses konfirmasi pembayaran dan mengelola beritanya sendiri.
+    - **Anggota:** Hanya bisa melihat beritanya sendiri di dasbor.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+---
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+## 🛠️ Teknologi yang Digunakan
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+* **Backend:** PHP 8.x, Laravel 11.x
+* **Frontend:** Tailwind CSS, Alpine.js (bawaan Breeze), JavaScript
+* **Database:** MySQL (dijalankan melalui Laragon)
+* **Package Utama:**
+    * `laravel/breeze`: Untuk sistem autentikasi.
+    * `maatwebsite/excel`: Untuk fungsionalitas Import Excel.
+    * `yajra/laravel-datatables-oracle`: Untuk tabel interaktif (opsional, telah diganti ke client-side).
 
-## Laravel Sponsors
+---
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+## 🚀 Instalasi & Konfigurasi Lokal
 
-### Premium Partners
+Berikut adalah panduan untuk menjalankan proyek ini di lingkungan lokal menggunakan **Laragon**.
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+1.  **Clone Repositori**
+    ```bash
+    git clone https://github.com/akhmdrdlo/himpesda_web.git himpesda-web
+    cd himpesda-web
+    ```
 
-## Contributing
+2.  **Install Dependensi PHP**
+    ```bash
+    composer install
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+3.  **Siapkan File Environment**
+    Salin file `.env.example` menjadi `.env`.
+    ```bash
+    copy .env.example .env
+    ```
 
-## Code of Conduct
+4.  **Generate Application Key**
+    Ini adalah langkah wajib untuk semua aplikasi Laravel.
+    ```bash
+    php artisan key:generate
+    ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+5.  **Konfigurasi Database**
+    * Buka Laragon dan klik tombol **"Database"** untuk membuka HeidiSQL/phpMyAdmin.
+    * Buat database baru dengan nama `db_himpesda`.
+    * Buka file `.env` dan sesuaikan konfigurasi database:
+        ```env
+        DB_CONNECTION=mysql
+        DB_HOST=127.0.0.1
+        DB_PORT=3306
+        DB_DATABASE=db_himpesda
+        DB_USERNAME=root
+        DB_PASSWORD=
+        ```
 
-## Security Vulnerabilities
+6.  **Jalankan Migrasi & Seeder**
+    Perintah ini akan membuat semua tabel dan mengisinya dengan data awal.
+    ```bash
+    php artisan migrate:fresh --seed
+    ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+7.  **Buat Storage Link**
+    Penting untuk membuat gambar yang di-upload bisa diakses publik.
+    ```bash
+    php artisan storage:link
+    ```
 
-## License
+8.  **Install Dependensi & Compile Aset Frontend**
+    ```bash
+    npm install
+    npm run dev
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+9. **Jalankan Aplikasi**
+    Buka Laragon, pastikan Apache dan MySQL berjalan. Akses proyek melalui URL yang dibuat otomatis:
+    **http://himpesda-web.test**
+
+---
+
+## 🔑 Akun Default
+
+Setelah menjalankan seeder, Anda bisa login menggunakan akun berikut:
+
+* **Admin:**
+    * **Email:** `admin@himpesda.org`
+    * **Password:** `password`
+* **Operator:**
+    * **Email:** `operator@himpesda.org`
+    * **Password:** `password`
+* **Bendahara:**
+    * **Email:** `bendahara@himpesda.org`
+    * **Password:** `password`
