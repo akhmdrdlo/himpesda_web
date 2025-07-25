@@ -27,9 +27,10 @@ class Pendaftar extends Model
         'npwp',
         'asal_instansi',
         'unit_kerja',
+        'provinsi_id',
         'jabatan_fungsional',
         'pas_foto',
-        'bukti_pembayaran', // Nama kolom yang kita gunakan
+        'bukti_pembayaran',
         'telepon',
         'alamat',
         'password',

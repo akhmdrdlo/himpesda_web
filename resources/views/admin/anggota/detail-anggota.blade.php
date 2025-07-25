@@ -52,32 +52,31 @@
     <div class="flex flex-wrap -mx-3">
         <div class="w-full max-w-full px-3 shrink-0">
             <div class="relative flex flex-col min-w-0 break-words bg-white border-0 shadow-xl rounded-2xl bg-clip-border">
-                <div class="border-black/12.5 rounded-t-2xl border-b-0 border-solid p-6 pb-0">
+                <div class="p-6 pb-0">
                     <h6 class="text-lg">Detail Informasi Anggota</h6>
                 </div>
                 <div class="flex-auto p-6">
-                    <p class="leading-normal uppercase text-sm text-slate-500">Informasi Pribadi</p>
+                    {{-- Informasi Pribadi --}}
+                    <p class="text-sm leading-normal uppercase text-slate-500">Informasi Pribadi</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-6">
                         <div><strong class="block text-xs text-slate-500">Nama Lengkap:</strong><p>{{ $anggota->nama_lengkap }}</p></div>
                         <div><strong class="block text-xs text-slate-500">Email:</strong><p>{{ $anggota->email }}</p></div>
-                        <div><strong class="block text-xs text-slate-500">Tanggal Lahir:</strong><p>{{ $anggota->tanggal_lahir ? \Carbon\Carbon::parse($anggota->tanggal_lahir)->translatedFormat('d F Y') : '-' }}</p></div>
+                        <div><strong class="block text-xs text-slate-500">No. Telepon:</strong><p>{{ $anggota->no_telp ?? '-' }}</p></div>
                         <div><strong class="block text-xs text-slate-500">Jenis Kelamin:</strong><p>{{ $anggota->jenis_kelamin ?? '-' }}</p></div>
+                        <div><strong class="block text-xs text-slate-500">Tanggal Lahir:</strong><p>{{ $anggota->tanggal_lahir ? \Carbon\Carbon::parse($anggota->tanggal_lahir)->translatedFormat('d F Y') : '-' }}</p></div>
                         <div><strong class="block text-xs text-slate-500">Agama:</strong><p>{{ $anggota->agama ?? '-' }}</p></div>
                     </div>
                     <hr class="h-px mx-0 my-4 bg-transparent border-0 opacity-25 bg-gradient-to-r from-transparent via-black/40 to-transparent" />
-                    <p class="leading-normal uppercase text-sm text-slate-500">Informasi Kepegawaian & Instansi</p>
+                    {{-- Informasi Kepegawaian --}}
+                    <p class="text-sm leading-normal uppercase text-slate-500">Informasi Kepegawaian</p>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div><strong class="block text-xs text-slate-500">Nomor Anggota (KTA):</strong><p>{{ $anggota->nomor_anggota ?? 'Belum Digenerate' }}</p></div>
                         <div><strong class="block text-xs text-slate-500">NIP:</strong><p>{{ $anggota->nip ?? '-' }}</p></div>
                         <div><strong class="block text-xs text-slate-500">NPWP:</strong><p>{{ $anggota->npwp ?? '-' }}</p></div>
+                        <div><strong class="block text-xs text-slate-500">Golongan/Ruang:</strong><p>{{ $anggota->gol_ruang ?? '-' }}</p></div>
+                        <div><strong class="block text-xs text-slate-500">Jabatan Fungsional:</strong><p>{{ $anggota->jabatan_fungsional ?? '-' }}</p></div>
                         <div><strong class="block text-xs text-slate-500">Asal Instansi:</strong><p>{{ $anggota->asal_instansi ?? '-' }}</p></div>
                         <div><strong class="block text-xs text-slate-500">Unit Kerja:</strong><p>{{ $anggota->unit_kerja ?? '-' }}</p></div>
-                         <div><strong class="block text-xs text-slate-500">Jabatan Fungsional:</strong><p>{{ $anggota->jabatan_fungsional ?? '-' }}</p></div>
-                    </div>
-                    <hr class="h-px mx-0 my-4 bg-transparent border-0 opacity-25 bg-gradient-to-r from-transparent via-black/40 to-transparent" />
-                    <p class="leading-normal uppercase text-sm text-slate-500">Informasi Akun</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
-                        <div><strong class="block text-xs text-slate-500">Level Akun:</strong><p class="capitalize">{{ $anggota->level }}</p></div>
-                        <div><strong class="block text-xs text-slate-500">Tanggal Bergabung:</strong><p>{{ $anggota->created_at->translatedFormat('d F Y, H:i') }}</p></div>
                     </div>
                 </div>
             </div>

@@ -56,15 +56,18 @@ class KonfirmasiController extends Controller
 
         // --- PROSES PROMOSI MENJADI ANGGOTA AKTIF ---
         try {
-            // Buat KTA unik dengan format: 05 (kode provinsi dummy) + 4 digit nomor urut pendaftar
-            $nomorKTA = '05' . str_pad($pendaftar->id, 4, '0', STR_PAD_LEFT);
+            // Gunakan provinsi_id dari pendaftar sebagai awalan KTA
+            $kodeProvinsi = $pendaftar->provinsi_id; 
+            $nomorUrut = str_pad($pendaftar->id, 4, '0', STR_PAD_LEFT); 
+            $nomorKTA = $kodeProvinsi . $nomorUrut; 
 
             // Pindahkan data pendaftar ke tabel users
             User::create([
                 'nomor_anggota' => $nomorKTA,
+                'provinsi_id' => $pendaftar->provinsi_id, 
                 'nama_lengkap' => $pendaftar->nama_lengkap,
                 'email' => $pendaftar->email,
-                'password' => $pendaftar->password, // Ambil password yang sudah di-hash dari tabel pendaftar
+                'password' => $pendaftar->password, 
                 'no_telp' => $pendaftar->no_telp,
                 'nip' => $pendaftar->nip,
                 'jenis_kelamin' => $pendaftar->jenis_kelamin,
@@ -77,6 +80,8 @@ class KonfirmasiController extends Controller
                 'gol_ruang' => $pendaftar->gol_ruang,
                 'pas_foto' => $pendaftar->pas_foto,
                 'level' => 'anggota',
+                'provinsi' => $pendaftar->provinsi,
+                'kabupaten_kota' => $pendaftar->kabupaten_kota,
             ]);
 
             // Hapus data dari tabel pendaftar setelah berhasil dipromosikan

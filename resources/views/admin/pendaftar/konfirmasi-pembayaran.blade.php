@@ -63,7 +63,7 @@
             <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl rounded-2xl bg-clip-border">
                 <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent flex justify-between items-center">
                     <h6>Pendaftar Menunggu Konfirmasi</h6>
-                    <a href="#" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer">Tambah Pendaftar Baru</a>
+                    <a href="{{ route('pendaftaran.form') }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer">Tambah Pendaftar Baru</a>
                 </div>
                 <div class="flex-auto px-0 pt-0 pb-2">
                     <div class="p-4 overflow-x-auto">

@@ -17,9 +17,6 @@ class AdminProfileController extends Controller
 {
     public function index()
     {
-        // INI DIA INTEGRASINYA!
-        // Auth::user() secara otomatis mengambil seluruh data dari user
-        // yang sesi loginnya sedang aktif saat ini.
         $user = Auth::user();
 
         // Lalu kita kirim data user tersebut ke view

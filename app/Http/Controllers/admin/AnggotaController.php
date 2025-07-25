@@ -63,30 +63,43 @@ class AnggotaController extends Controller
 
     /**
      * Memproses dan menyimpan perubahan data anggota.
+     * FIX: Validasi dan update disesuaikan dengan semua kolom di tabel users.
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $anggota = User::findOrFail($id);
+
+        $validated = $request->validate([
             'nama_lengkap' => 'required|string|max:255',
-            'email' => ['required', 'email', Rule::unique('users')->ignore($id)],
-            'nip' => ['nullable', 'string', 'max:20', Rule::unique('users')->ignore($id)],
+            'email' => ['required', 'email', Rule::unique('users')->ignore($anggota->id)],
+            'no_telp' => 'nullable|string|max:20',
+            'nip' => ['nullable', 'string', 'max:20', Rule::unique('users')->ignore($anggota->id)],
+            'jenis_kelamin' => 'nullable|string|max:25',
             'tanggal_lahir' => 'nullable|date',
-            'jenis_kelamin' => 'nullable|string',
+            'agama' => 'nullable|string|max:20',
+            'npwp' => 'nullable|string|max:25',
+            'asal_instansi' => 'nullable|string|max:255',
+            'unit_kerja' => 'nullable|string|max:255',
             'jabatan_fungsional' => 'nullable|string|max:255',
+            'gol_ruang' => 'nullable|string|max:10',
             'pas_foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $anggota = User::findOrFail($id);
+        // Memisahkan file dari data teks
         $dataToUpdate = $request->except('pas_foto');
 
+        // Handle upload foto jika ada file baru
         if ($request->hasFile('pas_foto')) {
+            // Hapus foto lama jika ada
             if ($anggota->pas_foto) {
                 Storage::disk('public')->delete($anggota->pas_foto);
             }
+            // Simpan foto baru dan dapatkan path-nya
             $path = $request->file('pas_foto')->store('profil-fotos', 'public');
             $dataToUpdate['pas_foto'] = $path;
         }
 
+        // Update data di database
         $anggota->update($dataToUpdate);
 
         return redirect()->route('admin.anggota.show', $anggota->id)->with('success', 'Profil anggota berhasil diperbarui!');

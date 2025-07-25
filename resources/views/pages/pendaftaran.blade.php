@@ -88,6 +88,27 @@
                 class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200"
                 required value="{{ old('no_telp') }}">
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <label for="select-provinsi" class="block mb-2 text-sm font-semibold">Provinsi</label>
+                    <select name="provinsi" id="select-provinsi" class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200" required>
+                        @foreach($provinsiList ?? [] as $provinsi)
+                            <option value="{{ $provinsi->id }}" {{ old('provinsi') == $provinsi->id ? 'selected' : '' }}>{{ $provinsi->nama }}</option>
+                        @endforeach
+                    </select>
+                <input type="hidden" name="provinsi_id" id="provinsi-id">
+                </div>
+                <div>
+                    <label for="select-kabupaten" class="block mb-2 text-sm font-semibold">Kabupaten/Kota</label>
+                    <select name="kabupaten_kota" id="select-kabupaten" class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200" required>
+                        @if(old('provinsi') && isset($kabupatenList))
+                            @foreach($kabupatenList as $kabupaten)
+                                <option value="{{ $kabupaten->id }}" {{ old('kabupaten_kota') == $kabupaten->id ? 'selected' : '' }}>{{ $kabupaten->nama }}</option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            </div>
             <div>
             <label for="gol_ruang" class="block mb-2 text-sm font-semibold">Gol/Ruang</label>
             <input type="text" id="gol_ruang" name="gol_ruang"
@@ -136,3 +157,51 @@
     </form>
 </section>
 @endsection
+
+@push('scripts')
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Inisialisasi Select2
+        $('#select-provinsi').select2({
+            width: '100%'
+        });
+        $('#select-kabupaten').select2({
+            width: '100%'
+        });
+
+       // Mengambil data Provinsi
+        $.getJSON('https://ibnux.github.io/data-indonesia/provinsi.json', function(data) {
+            $('#select-provinsi').empty().append('<option value=""></option>'); 
+            $.each(data, function(index, provinsi) {
+                // Di sini kita tetap menggunakan nama provinsi sebagai value untuk ditampilkan
+                $('#select-provinsi').append(new Option(provinsi.nama, provinsi.nama));
+            });
+        });
+
+        // Event listener saat provinsi berubah
+        $('#select-provinsi').on('change', function() {
+            var namaProvinsi = $(this).val();
+            $('#select-kabupaten').empty().append('<option value="">Memuat...</option>').trigger('change');
+
+            $.getJSON('https://ibnux.github.io/data-indonesia/provinsi.json', function(data) {
+                // Cari provinsi yang dipilih untuk mendapatkan ID-nya
+                var provinsiDipilih = data.find(p => p.nama === namaProvinsi);
+
+                if (provinsiDipilih) {
+                    // FIX: Simpan ID provinsi ke input tersembunyi
+                    $('#provinsi-id').val(provinsiDipilih.id);
+
+                    $.getJSON('https://ibnux.github.io/data-indonesia/kabupaten/' + provinsiDipilih.id + '.json', function(kabupatenData) {
+                        $('#select-kabupaten').empty().append('<option value=""></option>'); 
+                        $.each(kabupatenData, function(index, kabupaten) {
+                            $('#select-kabupaten').append(new Option(kabupaten.nama, kabupaten.nama));
+                        });
+                    });
+                }
+            });
+        }); 
+    });
+</script>
+@endpush
