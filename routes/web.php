@@ -57,8 +57,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Resource route untuk Berita dan Organisasi
     Route::resource('berita', BeritaController::class);
-    Route::get('/organisasi/edit', [OrganisasiController::class, 'edit'])->name('organisasi.edit');
-    Route::put('/organisasi', [OrganisasiController::class, 'update'])->name('organisasi.update');
+    Route::get('/organisasi/edit', [HimpunanController::class, 'edit'])->name('organisasi.edit');
+    Route::put('/organisasi', [HimpunanController::class, 'update'])->name('organisasi.update');
 
     // Konfirmasi & Profil
     Route::get('/konfirmasi', [KonfirmasiController::class, 'index'])->name('konfirmasi.index');
