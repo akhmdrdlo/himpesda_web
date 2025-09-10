@@ -1,0 +1,52 @@
+:root {
+  --blue-dark: #0b2545;
+  --yellow-light: #fff9db;
+}
+
+body {
+  background-color: var(--yellow-light);
+  color: var(--blue-dark);
+  font-family: sans-serif; /* Menggunakan font asli */
+}
+
+/* Hide scrollbar for carousel container */
+#carousel::-webkit-scrollbar {
+  display: none;
+}
+#carousel {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* Gradient overlay untuk hero - Menggunakan versi asli */
+.hero-gradient {
+  background: linear-gradient(to bottom, rgba(11, 37, 69, 0.7), rgba(255, 249, 219, 0.9) 100%);
+}
+
+/* Animation classes - Menggunakan versi asli dari file Anda */
+.animate-slide-in-left {
+  animation: slideInLeft 0.8s forwards;
+}
+.animate-slide-in-right {
+  animation: slideInRight 0.8s forwards;
+}
+@keyframes slideInLeft {
+  0% {
+    opacity: 0;
+    transform: translateX(-50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes slideInRight {
+  0% {
+    opacity: 0;
+    transform: translateX(50px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}

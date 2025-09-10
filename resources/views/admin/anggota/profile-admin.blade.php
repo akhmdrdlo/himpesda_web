@@ -32,7 +32,11 @@
                     <div class="h-full">
                         {{-- Menampilkan nama lengkap dan level dari user yang login --}}
                         <h5 class="mb-1">{{ $anggota->nama_lengkap }}</h5>
+<<<<<<< HEAD
                         <p class="mb-0 font-semibold leading-normal text-sm capitalize">{{ $anggota->level }} - {{ $anggota->nomor_anggota}}</p>
+=======
+                        <p class="mb-0 font-semibold leading-normal text-sm capitalize">{{ $anggota->level }}</p>
+>>>>>>> server
                     </div>
                 </div>
                 <div class="w-full max-w-full px-3 mt-4 lg:mt-0 lg:w-auto lg:flex-none ml-auto self-center">
