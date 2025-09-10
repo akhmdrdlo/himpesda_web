@@ -88,7 +88,13 @@
                 class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200"
                 required value="{{ old('no_telp') }}">
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+                <label for="gol_ruang" class="block mb-2 text-sm font-semibold">Gol/Ruang</label>
+                <input type="text" id="gol_ruang" name="gol_ruang"
+                    class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200"
+                    value="{{ old('gol_ruang') }}">
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
                 <div>
                     <label for="select-provinsi" class="block mb-2 text-sm font-semibold">Provinsi</label>
                     <select name="provinsi" id="select-provinsi" class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200" required>
@@ -108,13 +114,7 @@
                         @endif
                     </select>
                 </div>
-            </div>
-            <div>
-            <label for="gol_ruang" class="block mb-2 text-sm font-semibold">Gol/Ruang</label>
-            <input type="text" id="gol_ruang" name="gol_ruang"
-                class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200"
-                value="{{ old('gol_ruang') }}">
-            </div>
+            </div>  
             <div>
             <label for="password" class="block mb-2 text-sm font-semibold">Password</label>
             <input type="password" id="password" name="password"

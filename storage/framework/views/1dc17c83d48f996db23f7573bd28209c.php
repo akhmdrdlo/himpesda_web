@@ -1,4 +1,3 @@
-
 <?php $__env->startSection('title', 'Pendaftaran Anggota'); ?>
 <?php $__env->startSection('content'); ?>
 <section class="w-full bg-[var(--blue-dark)] py-20">
@@ -89,11 +88,32 @@
                 required value="<?php echo e(old('no_telp')); ?>">
             </div>
             <div>
-            <label for="gol_ruang" class="block mb-2 text-sm font-semibold">Gol/Ruang</label>
-            <input type="text" id="gol_ruang" name="gol_ruang"
-                class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200"
-                value="<?php echo e(old('gol_ruang')); ?>">
+                <label for="gol_ruang" class="block mb-2 text-sm font-semibold">Gol/Ruang</label>
+                <input type="text" id="gol_ruang" name="gol_ruang"
+                    class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200"
+                    value="<?php echo e(old('gol_ruang')); ?>">
             </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 w-full">
+                <div>
+                    <label for="select-provinsi" class="block mb-2 text-sm font-semibold">Provinsi</label>
+                    <select name="provinsi" id="select-provinsi" class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200" required>
+                        <?php $__currentLoopData = $provinsiList ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $provinsi): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                            <option value="<?php echo e($provinsi->id); ?>" <?php echo e(old('provinsi') == $provinsi->id ? 'selected' : ''); ?>><?php echo e($provinsi->nama); ?></option>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                    </select>
+                <input type="hidden" name="provinsi_id" id="provinsi-id">
+                </div>
+                <div>
+                    <label for="select-kabupaten" class="block mb-2 text-sm font-semibold">Kabupaten/Kota</label>
+                    <select name="kabupaten_kota" id="select-kabupaten" class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200" required>
+                        <?php if(old('provinsi') && isset($kabupatenList)): ?>
+                            <?php $__currentLoopData = $kabupatenList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $kabupaten): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <option value="<?php echo e($kabupaten->id); ?>" <?php echo e(old('kabupaten_kota') == $kabupaten->id ? 'selected' : ''); ?>><?php echo e($kabupaten->nama); ?></option>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                        <?php endif; ?>
+                    </select>
+                </div>
+            </div>  
             <div>
             <label for="password" class="block mb-2 text-sm font-semibold">Password</label>
             <input type="password" id="password" name="password"
@@ -136,4 +156,52 @@
     </form>
 </section>
 <?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+<script>
+    $(document).ready(function() {
+        // Inisialisasi Select2
+        $('#select-provinsi').select2({
+            width: '100%'
+        });
+        $('#select-kabupaten').select2({
+            width: '100%'
+        });
+
+       // Mengambil data Provinsi
+        $.getJSON('https://ibnux.github.io/data-indonesia/provinsi.json', function(data) {
+            $('#select-provinsi').empty().append('<option value=""></option>'); 
+            $.each(data, function(index, provinsi) {
+                // Di sini kita tetap menggunakan nama provinsi sebagai value untuk ditampilkan
+                $('#select-provinsi').append(new Option(provinsi.nama, provinsi.nama));
+            });
+        });
+
+        // Event listener saat provinsi berubah
+        $('#select-provinsi').on('change', function() {
+            var namaProvinsi = $(this).val();
+            $('#select-kabupaten').empty().append('<option value="">Memuat...</option>').trigger('change');
+
+            $.getJSON('https://ibnux.github.io/data-indonesia/provinsi.json', function(data) {
+                // Cari provinsi yang dipilih untuk mendapatkan ID-nya
+                var provinsiDipilih = data.find(p => p.nama === namaProvinsi);
+
+                if (provinsiDipilih) {
+                    // FIX: Simpan ID provinsi ke input tersembunyi
+                    $('#provinsi-id').val(provinsiDipilih.id);
+
+                    $.getJSON('https://ibnux.github.io/data-indonesia/kabupaten/' + provinsiDipilih.id + '.json', function(kabupatenData) {
+                        $('#select-kabupaten').empty().append('<option value=""></option>'); 
+                        $.each(kabupatenData, function(index, kabupaten) {
+                            $('#select-kabupaten').append(new Option(kabupaten.nama, kabupaten.nama));
+                        });
+                    });
+                }
+            });
+        }); 
+    });
+</script>
+<?php $__env->stopPush(); ?>
 <?php echo $__env->make('layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\laragon\www\himpesda-web\resources\views/pages/pendaftaran.blade.php ENDPATH**/ ?>

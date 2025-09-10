@@ -82,7 +82,7 @@ class AnggotaController extends Controller
             'unit_kerja' => 'nullable|string|max:255',
             'jabatan_fungsional' => 'nullable|string|max:255',
             'gol_ruang' => 'nullable|string|max:10',
-            'pas_foto' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'pas_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
         // Memisahkan file dari data teks
@@ -94,7 +94,7 @@ class AnggotaController extends Controller
             if ($anggota->pas_foto) {
                 Storage::disk('public')->delete($anggota->pas_foto);
             }
-            // Simpan foto baru dan dapatkan path-nya
+            // Simpan foto baru dan dapatkan path-nyaax:2048
             $path = $request->file('pas_foto')->store('profil-fotos', 'public');
             $dataToUpdate['pas_foto'] = $path;
         }

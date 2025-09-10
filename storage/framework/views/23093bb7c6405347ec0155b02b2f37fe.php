@@ -63,38 +63,44 @@
       <nav class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all ease-in shadow-none duration-250 rounded-2xl lg:flex-nowrap lg:justify-start">
         <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
           <h6 class="mb-0 font-bold text-white capitalize"><?php echo $__env->yieldContent('title'); ?></h6>
-          <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
+            <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
             <div class="flex items-center md:ml-auto md:pr-4"></div>
             <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
+              <li class="flex items-center pr-2">
+              <a href="<?php echo e(route('home')); ?>" class="inline-flex items-center px-4 py-2 rounded-full bg-blue-500 text-white text-sm font-semibold shadow hover:bg-blue-600 transition">
+              <i class="fa fa-arrow-left mr-2"></i>
+              Homepage
+              </a>
+              </li>
               <li class="relative flex items-center">
-                <button id="user-menu-button" class="block px-0 py-2 mt-3 text-sm font-semibold text-white transition-all">
-                    <i class="fa fa-user sm:mr-1"></i>
-                    <span class="hidden sm:inline"><?php echo e(auth()->user()->nama_lengkap); ?></span>
-                    <i class="fa fa-chevron-down text-xs ml-2"></i>
-                </button>
-                
-                <div id="user-menu" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden z-50">
-                    <a href="<?php echo e(route('admin.profile.show')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Lihat Profil</a>
-                    <div class="border-t border-gray-100"></div>
-                    <form method="POST" action="<?php echo e(route('logout')); ?>">
-                        <?php echo csrf_field(); ?>
-                        <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault(); this.closest('form').submit();" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Log Out
-                        </a>
-                    </form>
-                </div>
+              <button id="user-menu-button" class="block px-0 py-2 mt-3 text-sm font-semibold text-white transition-all">
+              <i class="fa fa-user sm:mr-1"></i>
+              <span class="hidden sm:inline"><?php echo e(auth()->user()->nama_lengkap); ?></span>
+              <i class="fa fa-chevron-down text-xs ml-2"></i>
+              </button>
+              
+              <div id="user-menu" class="absolute right-0 top-full mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden z-50">
+              <a href="<?php echo e(route('admin.profile.show')); ?>" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Lihat Profil</a>
+              <div class="border-t border-gray-100"></div>
+              <form method="POST" action="<?php echo e(route('logout')); ?>">
+                <?php echo csrf_field(); ?>
+                <a href="<?php echo e(route('logout')); ?>" onclick="event.preventDefault(); this.closest('form').submit();" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Log Out
+                </a>
+              </form>
+              </div>
               </li>
               <li class="flex items-center pl-4 xl:hidden">
-                <a href="javascript:;" id="hamburger-btn" class="block p-0 text-sm text-white transition-all ease-nav-brand">
-                  <div class="w-4.5 overflow-hidden">
-                    <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i>
-                    <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i>
-                    <i class="ease relative block h-0.5 rounded-sm bg-white transition-all"></i>
-                  </div>
-                </a>
+              <a href="javascript:;" id="hamburger-btn" class="block p-0 text-sm text-white transition-all ease-nav-brand">
+              <div class="w-4.5 overflow-hidden">
+              <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i>
+              <i class="ease mb-0.75 relative block h-0.5 rounded-sm bg-white transition-all"></i>
+              <i class="ease relative block h-0.5 rounded-sm bg-white transition-all"></i>
+              </div>
+              </a>
               </li>
             </ul>
-          </div>
+            </div>
         </div>
       </nav>
       

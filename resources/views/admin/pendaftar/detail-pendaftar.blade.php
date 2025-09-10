@@ -49,7 +49,7 @@
                         <p class="leading-normal uppercase text-sm text-slate-500">Bukti Pembayaran</p>
                         <div class="mt-2 border border-gray-200 rounded-lg p-4">
                             @if($pendaftar->bukti_pembayaran)
-                                <img src="{{ asset('storage/' . $pendaftar->bukti_pembayaran) }}" alt="Bukti Pembayaran" class="w-full md:w-1/2 rounded-lg">
+                                <img src="{{ asset('storage/'.$pendaftar->bukti_pembayaran)}}" alt="Bukti Pembayaran" class="w-full md:w-1/2 rounded-lg">
                             @else
                                 <p class="text-sm text-slate-500">Pendaftar belum mengunggah bukti pembayaran.</p>
                                 {{-- Placeholder Dummy --}}
