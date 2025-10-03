@@ -90,10 +90,10 @@
                 <div>
                     <h4 class="font-semibold text-white mb-4">Tautan</h4>
                     <ul class="space-y-2 text-sm">
-                        <li><a href="profil.html" class="hover:text-white">Profil</a></li>
-                        <li><a href="berita.html" class="hover:text-white">Berita</a></li>
-                        <li><a href="keanggotaan.html" class="hover:text-white">Keanggotaan</a></li>
-                        <li><a href="login.html" class="hover:text-white">Login</a></li>
+                        <li><a href="{{ route('profil.sejarah') }}" class="hover:text-white">Profil</a></li>
+                        <li><a href="{{ route('berita.index') }}" class="hover:text-white">Berita</a></li>
+                        <li><a href="{{ route('pendaftaran.form') }}" class="hover:text-white">Keanggotaan</a></li>
+                        <li><a href="{{ route('login') }}" class="hover:text-white">Login</a></li>
                     </ul>
                 </div>
                 <div>
