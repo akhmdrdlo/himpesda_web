@@ -30,6 +30,22 @@ class AnggotaController extends Controller
         $anggota = User::findOrFail($id);
         return view('admin.anggota.detail-anggota', compact('anggota'));
     }
+
+    public function cetakKartu(User $user)
+    {
+        // Menggunakan 'user' karena view kartu anggota mengharapkan variabel $user
+        return view('admin.anggota.kartu-anggota', ['user' => $user]);
+    }
+
+    public function eksporKartu()
+    {
+        // Mengambil semua user yang levelnya 'anggota'
+        $users = User::where('level', 'anggota')->get();
+        
+        // Pastikan path ke view sudah benar
+        return view('admin.anggota.ekspor-kartu', compact('users'));
+    }
+
     /**
      * Menampilkan form untuk mengimpor anggota dari file Excel.
      */

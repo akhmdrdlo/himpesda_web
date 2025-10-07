@@ -16,9 +16,10 @@
 </div>
 @endif
     <div class="relative flex flex-col flex-auto min-w-0 p-4 mx-6 overflow-hidden break-words bg-white border-0 shadow-3xl rounded-2xl bg-clip-border">
-        <div class="flex flex-wrap -mx-3">
+        <div class=" flex-wrap -mx-3">
             <div class="flex-none w-auto max-w-full px-3">
-                <div class="relative inline-flex items-center justify-center text-white h-12 w-20 rounded-xl">
+                <!-- Ukuran foto profil diperbesar -->
+                <div class="relative inline-flex items-center justify-center text-white transition-all duration-200 ease-in-out h-10 w-10 rounded-xl">
                     @if($anggota->pas_foto)
                         <img src="{{ asset('storage/' . $anggota->pas_foto) }}" alt="Pas Foto {{ $anggota->nama_lengkap }}" class="w-full h-full shadow-2xl rounded-xl object-cover" />
                     @else
@@ -34,6 +35,10 @@
             </div>
             <div class="w-full max-w-full px-3 mt-4 lg:mt-0 lg:w-auto lg:flex-none ml-auto self-center">
                 <div class="flex items-center justify-center lg:justify-end space-x-2 flex-wrap gap-y-2">
+                    <!-- Tombol Cetak Kartu ditambahkan -->
+                    <a href="{{ route('admin.anggota.cetak-kartu', $anggota->id) }}" target="_blank" class="inline-block px-4 py-2 font-bold text-center text-white align-middle transition-all ease-in bg-gradient-to-tl from-blue-500 to-violet-500 border-0 rounded-lg shadow-md cursor-pointer text-xs hover:shadow-xs hover:-translate-y-px active:opacity-85">
+                        <i class="fas fa-print mr-1"></i> Cetak Kartu
+                    </a>
                     @if(in_array(auth()->user()->level, ['admin', 'operator']))
                     <a href="{{ route('admin.anggota.edit', $anggota->id) }}" class="inline-block px-4 py-2 font-bold text-center text-white align-middle transition-all ease-in bg-slate-700 border-0 rounded-lg shadow-md cursor-pointer text-xs hover:shadow-xs hover:-translate-y-px active:opacity-85">Update Profil</a>
                     <form action="{{ route('admin.anggota.destroy', $anggota->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus anggota ini?');">
@@ -69,7 +74,7 @@
                     <hr class="h-px mx-0 my-4 bg-transparent border-0 opacity-25 bg-gradient-to-r from-transparent via-black/40 to-transparent" />
                     {{-- Informasi Kepegawaian --}}
                     <p class="text-sm leading-normal uppercase text-slate-500">Informasi Kepegawaian</p>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 mb-6">
                         <div><strong class="block text-xs text-slate-500">Nomor Anggota (KTA):</strong><p>{{ $anggota->nomor_anggota ?? 'Belum Digenerate' }}</p></div>
                         <div><strong class="block text-xs text-slate-500">NIP:</strong><p>{{ $anggota->nip ?? '-' }}</p></div>
                         <div><strong class="block text-xs text-slate-500">NPWP:</strong><p>{{ $anggota->npwp ?? '-' }}</p></div>
@@ -78,9 +83,17 @@
                         <div><strong class="block text-xs text-slate-500">Asal Instansi:</strong><p>{{ $anggota->asal_instansi ?? '-' }}</p></div>
                         <div><strong class="block text-xs text-slate-500">Unit Kerja:</strong><p>{{ $anggota->unit_kerja ?? '-' }}</p></div>
                     </div>
+                    <hr class="h-px mx-0 my-4 bg-transparent border-0 opacity-25 bg-gradient-to-r from-transparent via-black/40 to-transparent" />
+                    {{-- Alamat Domisili --}}
+                    <p class="text-sm leading-normal uppercase text-slate-500">Alamat Domisili</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div><strong class="block text-xs text-slate-500">Provinsi:</strong><p>{{ $anggota->provinsi ?? '-' }}</p></div>
+                        <div><strong class="block text-xs text-slate-500">Kabupaten/Kota:</strong><p>{{ $anggota->kabupaten_kota ?? '-' }}</p></div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 @endsection
+

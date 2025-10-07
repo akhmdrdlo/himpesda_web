@@ -5,18 +5,23 @@
 @section('content')
     <section class="relative w-full h-screen -mt-[88px] top-0 overflow-hidden" id="hero-carousel">
         <div class="absolute inset-0 flex transition-transform duration-700 ease-in-out" id="carousel">
-            <article class="relative w-full flex-shrink-0">
-                <img alt="Kegiatan HIMPESDA" class="w-full h-full object-cover" src="{{ asset('assets/img/berita-1.jpg') }}"/>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-12 md:p-24">
-                    <h1 class="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg max-w-3xl mb-4">Membangun SDM Unggul dan Berdaya Saing</h1>
-                </div>
+             @forelse ($beritaTerbaru as $berita)
+             <article class="relative w-full flex-shrink-0">
+                    <a href="{{ route('berita.show', $berita->slug) }}">
+                    <img src="{{ $berita->gambar ? asset('storage/' . $berita->gambar) : 'https://via.placeholder.com/400x200.png?text=HIMPESDA' }}" alt="{{ $berita->judul }}" class="w-full h-full object-cover"/>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-12 md:p-24">
+                        <h1 class="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg max-w-3xl mb-4">{{$berita->judul}}</h1>
+                    </div>
+                </a>
             </article>
-            <article class="relative w-full flex-shrink-0">
-                <img alt="Seminar HIMPESDA" class="w-full h-full object-cover" src="{{ asset('assets/img/berita-2.jpg') }}"/>
-                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-12 md:p-24">
-                    <h1 class="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg max-w-3xl mb-4">Inovasi Untuk Negeri</h1>
-                </div>
-            </article>
+            @empty
+                <article class="relative w-full flex-shrink-0">
+                    <img alt="Kegiatan HIMPESDA" class="w-full h-full object-cover" src="{{ asset('assets/img/berita-1.jpg') }}"/>
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex flex-col justify-end p-12 md:p-24">
+                        <h1 class="text-4xl md:text-6xl font-extrabold text-white drop-shadow-lg max-w-3xl mb-4">Membangun SDM Unggul dan Berdaya Saing</h1>
+                    </div>
+                </article>
+            @endforelse
         </div>
         <button id="prevBtn" class="absolute top-1/2 left-6 transform -translate-y-1/2 bg-white/70 p-3 rounded-full z-20"><i class="fas fa-chevron-left"></i></button>
         <button id="nextBtn" class="absolute top-1/2 right-6 transform -translate-y-1/2 bg-white/70 p-3 rounded-full z-20"><i class="fas fa-chevron-right"></i></button>

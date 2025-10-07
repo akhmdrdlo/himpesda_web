@@ -7,7 +7,7 @@
     <title>@yield('title') - HIMPESDA Dashboard</title>
     {{-- Aset CSS --}}
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />    <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />   <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link href="{{ asset('assets/css/nucleo-svg.css') }}" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="{{ asset('assets/css/argon-dashboard-tailwind.css?v=1.0.1') }}" rel="stylesheet" />
@@ -59,31 +59,28 @@
     </aside>
 
     {{-- Konten Utama --}}
-    <main class="relative h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
+    <main class="h-full max-h-screen transition-all duration-200 ease-in-out xl:ml-68 rounded-xl">
       <nav class="relative flex flex-wrap items-center justify-between px-0 py-2 mx-6 transition-all ease-in shadow-none duration-250 rounded-2xl lg:flex-nowrap lg:justify-start">
         <div class="flex items-center justify-between w-full px-4 py-1 mx-auto flex-wrap-inherit">
           <h6 class="mb-0 font-bold text-white capitalize">@yield('title')</h6>
           <div class="flex items-center mt-2 grow sm:mt-0 sm:mr-6 md:mr-0 lg:flex lg:basis-auto">
             <div class="flex items-center md:ml-auto md:pr-4"></div>
-            <ul class="flex flex-row justify-end pl-0 mb-0 list-none md-max:w-full">
-              <li class="relative flex items-center">
-                <button id="user-menu-button" class="block px-0 py-2 mt-3 text-sm font-semibold text-white transition-all">
+            <ul class="flex flex-row items-center justify-end pl-0 mb-0 list-none md-max:w-full">
+              <li class="flex items-center">
+                <a href="{{ route('home') }}" class="block px-0 py-2 mr-4 text-sm font-semibold text-white transition-all" title="Dashboard User">
+                    <i class="fa fa-tachometer-alt sm:mr-1"></i>
+                    <span class="hidden sm:inline">Dashboard User</span>
+                </a>
+              </li>
+
+              <li class="flex items-center"> <!-- Dihapus 'relative' -->
+                <button id="user-menu-button" class="block px-0 py-2 text-sm font-semibold text-white transition-all">
                     <i class="fa fa-user sm:mr-1"></i>
                     <span class="hidden sm:inline">{{ auth()->user()->nama_lengkap }}</span>
                     <i class="fa fa-chevron-down text-xs ml-2"></i>
                 </button>
-                
-                <div id="user-menu" class="absolute right-0 top-full mt-4 w-48 bg-white rounded-md shadow-lg py-1 hidden z-50">
-                    <a href="{{ route('admin.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Lihat Profil</a>
-                    <div class="border-t border-gray-100"></div>
-                    <form method="POST" action="{{ route('logout') }}">
-                        @csrf
-                        <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            Log Out
-                        </a>
-                    </form>
-                </div>
               </li>
+
               <li class="flex items-center pl-4 xl:hidden">
                 <a href="javascript:;" id="hamburger-btn" class="block p-0 text-sm text-white transition-all ease-nav-brand">
                   <div class="w-4.5 overflow-hidden">
@@ -101,44 +98,78 @@
       @yield('content')
 
     </main>
+
+    <!-- Menu dropdown dipindah ke luar <main> untuk menghindari masalah pemotongan (clipping) -->
+    <div id="user-menu" class="absolute w-48 bg-white rounded-md shadow-lg py-1 hidden z-[100]">
+        <a href="{{ route('admin.profile.show') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Lihat Profil</a>
+        <a href="{{ route('home') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">Dashboard User</a>
+        <div class="border-t border-gray-100"></div>
+        <form method="POST" action="{{ route('logout') }}">
+            @csrf
+            <a href="{{ route('logout') }}" onclick="event.preventDefault(); this.closest('form').submit();" class="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                Log Out
+            </a>
+        </form>
+    </div>
   
-    
     @stack('scripts')
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            var sidenav = document.getElementById('sidenav-main');
-            var hamburgerBtn = document.getElementById('hamburger-btn');
-            var closeBtn = document.getElementById('sidenav-close-btn');
+      document.addEventListener('DOMContentLoaded', function() {
+          var sidenav = document.getElementById('sidenav-main');
+          var hamburgerBtn = document.getElementById('hamburger-btn');
+          var closeBtn = document.getElementById('sidenav-close-btn');
 
-            if (hamburgerBtn) {
-              hamburgerBtn.addEventListener('click', function(e) {
-                e.preventDefault(); 
-                sidenav.classList.toggle('-translate-x-full');
-              });
-            }
-
-            if (closeBtn) {
-                closeBtn.addEventListener('click', function() {
-                    sidenav.classList.add('-translate-x-full');
-                });
-            }
-
-            var userMenuButton = document.getElementById('user-menu-button');
-            var userMenu = document.getElementById('user-menu');
-
-            if (userMenuButton) {
-                userMenuButton.addEventListener('click', function() {
-                    userMenu.classList.toggle('hidden');
-                });
-            }
-
-            window.addEventListener('click', function(e) {
-                if (userMenuButton && !userMenuButton.contains(e.target) && userMenu && !userMenu.contains(e.target)) {
-                    userMenu.classList.add('hidden');
-                }
+          if (hamburgerBtn) {
+            hamburgerBtn.addEventListener('click', function(e) {
+              e.preventDefault(); 
+              sidenav.classList.toggle('-translate-x-full');
             });
-        });
-    </script>
+          }
+
+          if (closeBtn) {
+              closeBtn.addEventListener('click', function() {
+                  sidenav.classList.add('-translate-x-full');
+              });
+          }
+
+          // Logika baru untuk dropdown menu yang sudah diperbaiki
+          var userMenuButton = document.getElementById('user-menu-button');
+          var userMenu = document.getElementById('user-menu');
+
+          if (userMenuButton && userMenu) {
+              userMenuButton.addEventListener('click', function(event) {
+                  event.stopPropagation();
+
+                  if (userMenu.classList.contains('hidden')) {
+                      // Show logic
+                      userMenu.style.visibility = 'hidden'; // Siapkan untuk pengukuran
+                      userMenu.classList.remove('hidden');
+
+                      const menuWidth = userMenu.offsetWidth;
+                      const rect = userMenuButton.getBoundingClientRect();
+
+                      userMenu.style.top = `${rect.bottom + window.scrollY + 4}px`;
+                      userMenu.style.left = `${rect.right + window.scrollX - menuWidth}px`;
+
+                      userMenu.style.visibility = 'visible'; // Tampilkan di posisi yang benar
+                  } else {
+                      // Hide logic
+                      userMenu.classList.add('hidden');
+                      userMenu.style.visibility = ''; // Reset inline style
+                  }
+              });
+
+              // Menutup dropdown jika user mengklik di luar area
+              window.addEventListener('click', function(e) {
+                  if (!userMenu.classList.contains('hidden') && !userMenu.contains(e.target) && !userMenuButton.contains(e.target)) {
+                      userMenu.classList.add('hidden');
+                      userMenu.style.visibility = ''; // Reset juga di sini
+                  }
+              });
+          }
+      });
+  </script>
   </body>
 </html>
+

@@ -52,6 +52,8 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Route spesifik untuk import diletakkan SEBELUM Route::resource
     Route::get('/anggota/import', [AnggotaController::class, 'showImportForm'])->name('anggota.import.form');
+    Route::get('/anggota/ekspor-kartu', [AnggotaController::class, 'eksporKartu'])->name('anggota.ekspor-kartu');
+    Route::get('/anggota/{user}/cetak-kartu', [AnggotaController::class, 'cetakKartu'])->name('anggota.cetak-kartu');
     Route::post('/anggota/import', [AnggotaController::class, 'import'])->name('anggota.import.store');
     Route::resource('anggota', AnggotaController::class);
 

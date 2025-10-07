@@ -23,12 +23,12 @@
     <div class="flex flex-wrap -mx-3">
         <div class="flex-none w-full max-w-full px-3">
             <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl rounded-2xl bg-clip-border">
-                <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent flex justify-between items-center">
+                <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent flex flex-wrap justify-between items-center gap-4">
                     <h6>Tabel Daftar Anggota</h6>
                     @if(in_array(auth()->user()->level, ['admin', 'operator']))
                     <div class="space-x-2">
-                        {{-- Tombol Import sekarang menjadi link ke halaman baru --}}
-                        <a href="{{ route('admin.anggota.import.form') }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase bg-blue-500 rounded-lg">Import Excel</a>
+                        <a href="{{ route('admin.anggota.import.form') }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer hover:shadow-xs active:opacity-85">Import Excel</a>
+                        <a href="{{ route('admin.anggota.ekspor-kartu') }}" target="_blank" class="inline-block px-4 py-2 text-xs font-bold text-center text-black uppercase align-middle transition-all  border-0 rounded-lg shadow-md cursor-pointer hover:shadow-xs active:opacity-85">Ekspor Kartu</a>
                     </div>
                     @endif
                 </div>
@@ -92,24 +92,24 @@
 <script>
     $(document).ready(function() {
         
-        // Inisialisasi DataTables
+        // Inisialisasi DataTables dengan layout yang diperbaiki
         $('#anggota-table').DataTable({
             language: {
-                search: "Cari:",
+                search: "_INPUT_",
+                searchPlaceholder: "Cari anggota...",
                 lengthMenu: "Tampilkan _MENU_ entri",
                 info: "Dari _START_ sampai _END_ dari _TOTAL_ entri",
-                infoEmpty: "menampilkan 0 sampai 0 dari 0 entri",
+                infoEmpty: "Menampilkan 0 entri",
                 infoFiltered: "(disaring dari _MAX_ total entri)",
                 paginate: {
                     first: "Awal",
                     last: "Akhir",
-                    next: "Selanjutnya",
-                    previous: "Sebelumnya"
+                    next: "→",
+                    previous: "←"
                 }
             }
         });
 
-        // FIX 3: LOGIKA JAVASCRIPT UNTUK MENGGANTI TAMPILAN
         const tableContainer = $('#table-container');
         const formContainer = $('#import-form-container');
         const toggleBtn = $('#toggle-import-btn');
