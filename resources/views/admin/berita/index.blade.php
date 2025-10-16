@@ -19,7 +19,11 @@
             <div class="relative flex flex-col min-w-0 mb-6 break-words bg-white border-0 border-transparent border-solid shadow-xl rounded-2xl bg-clip-border">
                 <div class="p-6 pb-0 mb-0 border-b-0 border-b-solid rounded-t-2xl border-b-transparent flex justify-between items-center">
                     <h6>Tabel Berita</h6>
-                    <a href="{{ route('admin.berita.create') }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg shadow-md">Tambah Berita Baru</a>
+                    {{-- [MODIFIED] Tombol-tombol aksi ditambahkan di sini --}}
+                    <div class="flex space-x-2">
+                        <a href="{{ route('admin.categories.index') }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-slate-500 border-0 rounded-lg shadow-md hover:shadow-lg hover:bg-slate-600">Kelola Kategori</a>
+                        <a href="{{ route('admin.berita.create') }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg shadow-md hover:shadow-lg hover:bg-blue-600">Tambah Berita Baru</a>
+                    </div>
                 </div>
                 <div class="flex-auto pt-0 pb-2">
                     <div class="p-4 overflow-x-auto">
@@ -37,9 +41,9 @@
                                 @forelse($berita as $item)
                                 <tr class="bg-white border-b hover:bg-gray-50">
                                     <td class="px-6 py-4 font-semibold text-gray-900">{{ Str::limit($item->judul, 40) }}</td>
-                                    <td class="px-6 py-4">{{ $item->kategori }}</td>
+                                    <td class="px-6 py-4">{{ $item->category->name ?? 'N/A' }}</td> 
                                     <td class="px-6 py-4">{{ $item->user->nama_lengkap ?? 'N/A' }}</td>
-                                    <td class="px-6 py-4">{{ $item->created_at->translatedFormat('d F Y') }}</td>
+                                    <td class="px-6 py-4">{{ $item->published_at->translatedFormat('d F Y') }}</td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
                                         <a href="{{ route('admin.berita.show', $item->id) }}" class="px-4 py-2 mr-2 text-xs font-bold text-white bg-slate-700 rounded-lg">Edit</a>
                                         <form action="{{ route('admin.berita.destroy', $item->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menghapus berita ini?');">

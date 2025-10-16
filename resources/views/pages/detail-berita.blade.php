@@ -1,6 +1,5 @@
 @extends('layouts.app')
 
-{{-- Judul halaman akan mengambil judul berita secara dinamis --}}
 @section('title', $berita->judul)
 
 @section('content')
@@ -15,7 +14,7 @@
                 <p class="text-sm text-gray-500">
                     <a href="#" class="font-semibold text-blue-600">{{ $berita->kategori }}</a>
                     &bull;
-                    <span>{{ $berita->created_at->translatedFormat('d F Y') }}</span>
+                    <span>{{ $berita->published_at->translatedFormat('d F Y') }}</span>
                     &bull;
                     <span>Oleh: {{ $berita->user->nama_lengkap ?? 'Tim HIMPESDA' }}</span>
                 </p>
@@ -25,8 +24,7 @@
                 {{ $berita->judul }}
             </h1>
 
-            <div class="prose lg:prose-lg max-w-none text-gray-800 dark:text-gray-200 text-justify">
-                {{-- Menggunakan {!! !!} untuk merender HTML jika konten berita menggunakan rich text editor --}}
+            <div class="prose max-w-none text-gray-800 dark:text-gray-200 text-justify">
                 {!! $berita->konten !!}
             </div>
 

@@ -4,15 +4,70 @@ namespace App\Http\Controllers;
 use App\Models\Berita;
 use App\Models\Himpunan;
 use App\Models\Pendaftar;
+use App\Models\User;
+use App\Models\Document;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
     public function home()
     {
-        $organisasi = Himpunan::first();
-        $beritaTerbaru = Berita::latest()->take(3)->get();
-        return view('pages.home', compact('organisasi', 'beritaTerbaru'));
+       $himpunan = Himpunan::first();
+
+        // Ambil 5 berita terbaru yang sudah dipublikasikan
+        $beritaTerbaru = Berita::with('user', 'category')
+            ->where('status', 'published')
+            ->latest()
+            ->take(3)
+            ->get();
+
+        $youtubePost = Berita::where('kategori', 5)->latest('published_at')->first();
+        $instagramPost = Berita::where('kategori', 6)->latest('published_at')->first();
+        $xPost = Berita::where('kategori', 7)->latest('published_at')->first();
+        // --- Bagian Statistik Anggota ---
+        
+        $jumlahAnggota = User::where('level', 'anggota')->count(); 
+        $jumlahAnggotaPusat = User::where('tipe_anggota', 'pusat')->where('level', 'anggota')->count();
+        $jumlahAnggotaDaerah = User::where('tipe_anggota', 'daerah')->where('level', 'anggota')->count();
+        return view('pages.home', compact(
+            'himpunan',
+            'beritaTerbaru',
+            'jumlahAnggota',
+            'jumlahAnggotaPusat',
+            'jumlahAnggotaDaerah',
+            'youtubePost',
+            'instagramPost',
+            'xPost'
+        ));
+    }
+
+    // --- METHOD BARU UNTUK 3 HALAMAN DOKUMEN ---
+
+    /**
+     * Menampilkan halaman untuk Kode Etik.
+     */
+    public function kodeEtik()
+    {
+        $document = Document::where('slug', 'kode-etik')->firstOrFail();
+        return view('pages.profil.dokumen-detail', compact('document'));
+    }
+
+    /**
+     * Menampilkan halaman untuk Anggaran Dasar.
+     */
+    public function anggaranDasar()
+    {
+        $document = Document::where('slug', 'anggaran-dasar')->firstOrFail();
+        return view('pages.profil.dokumen-detail', compact('document'));
+    }
+
+    /**
+     * Menampilkan halaman untuk Anggaran Rumah Tangga.
+     */
+    public function anggaranRumahTangga()
+    {
+        $document = Document::where('slug', 'anggaran-rumah-tangga')->firstOrFail();
+        return view('pages.profil.dokumen-detail', compact('document'));
     }
 
     public function berita()

@@ -17,5 +17,6 @@ class Himpunan extends Model
         'gambar_struktur_organisasi',
         'nama_ketua',
         'foto_ketua',
+        'gambar_struktur_organisasi',
     ];
 }

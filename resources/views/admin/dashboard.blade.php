@@ -33,12 +33,19 @@
                             <h6 class="mb-0 text-xl font-bold">Informasi HIMPESDA</h6>
                             <p class="text-sm leading-normal">Data utama organisasi yang ditampilkan untuk publik.</p>
                         </div>
-                        {{-- Tombol ini HANYA akan muncul jika user yang login levelnya 'admin' --}}
                         @auth
                             @if(auth()->user()->level == 'admin')
-                                <a href="{{ route('admin.organisasi.edit') }}" class="inline-block px-6 py-3 mb-0 ml-auto font-bold text-center text-white align-middle transition-all ease-in bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer text-xs hover:shadow-xs hover:-translate-y-px active:opacity-85">
-                                    Ubah Informasi
-                                </a>
+                                {{-- Membuat container agar tombol sejajar --}}
+                                <div class="ml-auto flex items-center space-x-2">
+                                    {{-- Tombol Baru untuk Dokumen --}}
+                                    <a href="{{ route('admin.documents.index') }}" class="inline-block px-6 py-3 mb-0 font-bold text-center align-middle transition-all ease-in border-0 rounded-lg shadow-md cursor-pointer text-xs hover:shadow-xs hover:-translate-y-px active:opacity-85">
+                                        Kelola Dokumen
+                                    </a>
+                                    {{-- Tombol Lama --}}
+                                    <a href="{{ route('admin.organisasi.edit') }}" class="inline-block px-6 py-3 mb-0 font-bold text-center text-white align-middle transition-all ease-in bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer text-xs hover:shadow-xs hover:-translate-y-px active:opacity-85">
+                                        Ubah Informasi
+                                    </a>
+                                </div>
                             @endif
                         @endauth
                     </div>
@@ -47,7 +54,7 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                         <div>
                             <strong class="block text-sm">Profil Singkat</strong>
-                            <p class="text-sm text-slate-500">{{ $organisasi->profil_singkat ?? 'Data belum diisi.' }}</p>
+                            <p class="prose text-sm text-slate-500">{!!$organisasi->profil_singkat ?? 'Data belum diisi.' !!}</p>
                         </div>
                         <div>
                             <strong class="block text-sm">Ketua Saat Ini</strong>

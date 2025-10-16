@@ -14,8 +14,9 @@ class HimpunanController extends Controller
      */
     public function edit()
     {
-        // Ambil data organisasi pertama (dan satu-satunya) dari tabel
-        $organisasi = Himpunan::firstOrFail();
+        // Mengambil data pertama, atau membuat baris baru jika tabel kosong.
+        // Ini mencegah error saat aplikasi baru pertama kali dijalankan.
+        $organisasi = Himpunan::firstOrCreate([]);
         return view('admin.organisasi-edit', compact('organisasi'));
     }
 
@@ -33,23 +34,28 @@ class HimpunanController extends Controller
             'misi' => 'required|string',
             'nama_ketua' => 'required|string|max:255',
             'foto_ketua' => 'nullable|image|max:2048',
-            'gambar_struktur_organisasi' => 'nullable|image|max:2048',
+            'gambar_struktur_organisasi' => 'nullable|image|max:2048', // Validasi untuk gambar struktur
         ]);
         
+        // Ambil semua data teks dari request
         $dataToUpdate = $request->except(['foto_ketua', 'gambar_struktur_organisasi']);
 
+        // Proses upload foto ketua jika ada file baru
         if ($request->hasFile('foto_ketua')) {
             if ($organisasi->foto_ketua) Storage::disk('public')->delete($organisasi->foto_ketua);
             $dataToUpdate['foto_ketua'] = $request->file('foto_ketua')->store('organisasi', 'public');
         }
 
+        // Proses upload gambar struktur organisasi jika ada file baru
         if ($request->hasFile('gambar_struktur_organisasi')) {
             if ($organisasi->gambar_struktur_organisasi) Storage::disk('public')->delete($organisasi->gambar_struktur_organisasi);
             $dataToUpdate['gambar_struktur_organisasi'] = $request->file('gambar_struktur_organisasi')->store('organisasi', 'public');
         }
 
+        // Update semua data dalam satu query
         $organisasi->update($dataToUpdate);
 
         return redirect()->route('admin.dashboard')->with('success', 'Informasi organisasi berhasil diperbarui!');
     }
 }
+

@@ -5,8 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>@yield('title', 'HIMPESDA') - Himpunan Profesional Pengelola Sumber Daya Air</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />    <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />    <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}"/>
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
     @stack('styles')
 </head>
 <body class="bg-[var(--yellow-light)] text-[var(--blue-dark)] font-sans">
@@ -18,13 +19,17 @@
             
             <ul class="hidden md:flex space-x-8 text-sm font-medium items-center">
                 <li class="relative group">
-                    <a href="{{ route('profil.sejarah') }}" class="hover:text-yellow-400 transition flex items-center">
+                    <a href="#" class="hover:text-yellow-400 transition flex items-center">
                         Profil <i class="fas fa-chevron-down ml-2 text-xs"></i>
                     </a>
-                    <div class="absolute hidden group-hover:block bg-gray-800 text-white shadow-lg rounded-md w-48 py-2">
+                    <div class="absolute hidden group-hover:block bg-gray-800 text-white shadow-lg rounded-md w-56 py-2">
                         <a href="{{ route('profil.sejarah') }}" class="block px-4 py-2 text-sm hover:bg-gray-700">Sejarah Singkat</a>
                         <a href="{{ route('profil.visi-misi') }}" class="block px-4 py-2 text-sm hover:bg-gray-700">Visi dan Misi</a>
                         <a href="{{ route('profil.struktur') }}" class="block px-4 py-2 text-sm hover:bg-gray-700">Struktur Organisasi</a>
+                        {{-- Tautan Dokumen Ditambahkan Disini --}}
+                        <a href="{{ route('profil.anggaran-dasar') }}" class="block px-4 py-2   hover:bg-gray-700">Anggaran Dasar (AD)</a>
+                        <a href="{{ route('profil.anggaran-rumah-tangga') }}" class="block px-4 py-2  hover:bg-gray-700">Anggaran Rumah Tangga (ART)</a>
+                        <a href="{{ route('profil.kode-etik') }}" class="block px-4 py-2 hover:bg-gray-700">Kode Etik</a>
                     </div>
                 </li>
                 <li><a href="{{ route('berita.index') }}" class="hover:text-yellow-400 transition">Berita</a></li>
@@ -59,6 +64,10 @@
                             <li><a href="{{ route('profil.sejarah') }}" class="block hover:text-yellow-400">- Sejarah Singkat</a></li>
                             <li><a href="{{ route('profil.visi-misi') }}" class="block hover:text-yellow-400">- Visi dan Misi</a></li>
                             <li><a href="{{ route('profil.struktur') }}" class="block hover:text-yellow-400">- Struktur Organisasi</a></li>
+                            <li class="pt-1 mt-1 border-t border-gray-600"></li>
+                            <li><a href="{{ route('profil.anggaran-dasar') }}" class="block px-4 py-2   hover:bg-gray-700">Anggaran Dasar (AD)</a></li>
+                            <li><a href="{{ route('profil.anggaran-rumah-tangga') }}" class="block px-4 py-2  hover:bg-gray-700">Anggaran Rumah Tangga (ART)</a></li>
+                            <li><a href="{{ route('profil.kode-etik') }}" class="block px-4 py-2 hover:bg-gray-700">Kode Etik</a></li>
                         </ul>
                     </li>
                     <li><a href="{{ route('berita.index') }}" class="block hover:text-yellow-400"><i class="fa-solid fa-newspaper mr-2"></i>Berita</a></li>

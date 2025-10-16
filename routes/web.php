@@ -10,7 +10,9 @@ use App\Http\Controllers\Admin\AnggotaController;
 use App\Http\Controllers\Admin\AdminProfileController; 
 use App\Http\Controllers\Admin\KonfirmasiController;
 use App\Http\Controllers\Admin\BeritaController;
+use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\HimpunanController;
+use App\Http\Controllers\Admin\DocumentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -27,6 +29,11 @@ Route::prefix('profil')->name('profil.')->group(function () {
     Route::get('/sejarah', [PageController::class, 'sejarah'])->name('sejarah');
     Route::get('/visi-misi', [PageController::class, 'visiMisi'])->name('visi-misi');
     Route::get('/struktur', [PageController::class, 'struktur'])->name('struktur');
+    
+    // Route untuk halaman dokumen, sekarang di dalam grup profil
+    Route::get('/kode-etik', [PageController::class, 'kodeEtik'])->name('kode-etik');
+    Route::get('/anggaran-dasar', [PageController::class, 'anggaranDasar'])->name('anggaran-dasar');
+    Route::get('/anggaran-rumah-tangga', [PageController::class, 'anggaranRumahTangga'])->name('anggaran-rumah-tangga');
 });
 
 /*
@@ -59,8 +66,10 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
 
     // Resource route untuk Berita dan Organisasi
     Route::resource('berita', BeritaController::class);
+    Route::resource('categories', CategoryController::class);
     Route::get('/organisasi/edit', [HimpunanController::class, 'edit'])->name('organisasi.edit');
     Route::put('/organisasi', [HimpunanController::class, 'update'])->name('organisasi.update');
+    Route::resource('documents', DocumentController::class)->only(['index', 'edit', 'update']);
 
     // Konfirmasi & Profil
     Route::get('/konfirmasi', [KonfirmasiController::class, 'index'])->name('konfirmasi.index');
