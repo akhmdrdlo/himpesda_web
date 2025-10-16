@@ -107,6 +107,7 @@ Berikut adalah panduan untuk menjalankan proyek ini di lingkungan lokal mengguna
 8.  **Install Dependensi & Compile Aset Frontend**
     ```bash
     npm install
+    npm run build
     npm run dev
     ```
 
