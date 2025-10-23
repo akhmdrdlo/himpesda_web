@@ -93,14 +93,14 @@
                     <div class="text-white mt-3">
                         <p class="font-bold text-sm tracking-wide">{{ $user->nama_lengkap }}</p>
                         <div class="mt-2 text-[10px] space-y-1">
-                             <p>
-                                <span class="opacity-80">Cabang</span>
-                                <span class="font-semibold">: {{ $user->cabang ?? 'Pusat' }}</span>
-                            </p>
                             <p>
                                <span class="opacity-80">No. Anggota</span>
                                <span class="font-semibold">: {{ $user->nomor_anggota ?? 'N/A' }}</span>
                            </p>
+                            <p>
+                                <span class="opacity-80">Cabang</span>
+                                <span class="font-semibold">: {{ strtoupper($user->cabang_display) }}</span> 
+                            </p>
                         </div>
                     </div>
                 </div>

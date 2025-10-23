@@ -6,6 +6,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+
 
 class User extends Authenticatable
 {
@@ -60,5 +62,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    /**
+     * Accessor untuk menampilkan Cabang berdasarkan Tipe Anggota.
+     * Nama method: get NamaAtribut Attribute -> cabangDisplay
+     */
+    protected function cabangDisplay(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => $this->tipe_anggota === 'pusat' 
+                          ? 'Pusat' 
+                          : ($this->provinsi ?? 'Daerah') 
+        );
     }
 }
