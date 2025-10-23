@@ -31,6 +31,7 @@
                 <div class="h-full">
                     <h5 class="mb-1 text-xl">{{ $anggota->nama_lengkap }}</h5>
                     <p class="mb-0 font-semibold leading-normal text-sm">{{ $anggota->jabatan_fungsional ?? 'Jabatan Belum Diisi' }}</p>
+                    <p class="mb-0 font-semibold leading-normal text-sm">Anggota {{$anggota->tipe_anggota}}</p>
                 </div>
             </div>
             <div class="w-full max-w-full px-3 mt-4 lg:mt-0 lg:w-auto lg:flex-none ml-auto self-center">

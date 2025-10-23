@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -79,7 +81,7 @@ class AnggotaController extends Controller
 
     /**
      * Memproses dan menyimpan perubahan data anggota.
-     * FIX: Validasi dan update disesuaikan dengan semua kolom di tabel users.
+     * Memproses dan menyimpan perubahan data anggota.
      */
     public function update(Request $request, $id)
     {
@@ -99,10 +101,22 @@ class AnggotaController extends Controller
             'jabatan_fungsional' => 'nullable|string|max:255',
             'gol_ruang' => 'nullable|string|max:10',
             'pas_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'provinsi' => 'nullable|string|max:255',
+            'kabupaten_kota' => 'nullable|string|max:255',
+            // Validasi tipe anggota: hanya 'pusat' atau 'daerah'
+            'tipe_anggota' => 'required|in:pusat,daerah',
         ]);
 
         // Memisahkan file dari data teks
-        $dataToUpdate = $request->except('pas_foto');
+        $dataToUpdate = $request->except(['pas_foto', '_token', '_method']);
+
+        // --- Logika Khusus untuk Tipe Anggota ---
+        // Hanya admin yang bisa mengubah tipe anggota
+        if (Auth::user()->level != 'admin') {
+            // Jika bukan admin, paksa tipe anggota kembali ke nilai asli sebelum update
+            $dataToUpdate['tipe_anggota'] = $anggota->tipe_anggota;
+        }
+        // Jika admin, nilai dari form ($request->tipe_anggota) akan digunakan
 
         // Handle upload foto jika ada file baru
         if ($request->hasFile('pas_foto')) {
@@ -110,7 +124,7 @@ class AnggotaController extends Controller
             if ($anggota->pas_foto) {
                 Storage::disk('public')->delete($anggota->pas_foto);
             }
-            // Simpan foto baru dan dapatkan path-nyaax:2048
+            // Simpan foto baru dan dapatkan path-nya
             $path = $request->file('pas_foto')->store('profil-fotos', 'public');
             $dataToUpdate['pas_foto'] = $path;
         }

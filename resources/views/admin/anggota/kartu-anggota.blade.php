@@ -76,7 +76,7 @@
             <div class="relative z-10 p-4 flex flex-col h-full">
                 <!-- Header -->
                 <div class="flex items-center space-x-2">
-                    <div class="w-10 h-10 bg-white rounded-full p-1 flex-shrink-0"><img src="{{ asset('assets/img/logo-ct-dark.png') }}" alt="Logo"></div>
+                    <div class="w-10 h-10 bg-white rounded-full p-1 flex-shrink-0"><img src="{{ asset('assets/img/himpesda_logo.png') }}" alt="Logo"></div>
                     <div>
                         <p class="text-white font-bold text-base leading-tight">HIMPESDA</p>
                         <p class="text-blue-200 text-[8px] leading-tight">Himpunan Profesional Pengelola Sumber Daya Air</p>
@@ -122,7 +122,7 @@
                 </div>
                 <div class="p-4 flex flex-col h-full">
                     <div class="text-center my-1">
-                        <div class="w-8 h-8 bg-white rounded-full p-0.5 mx-auto shadow-sm inline-block"><img src="{{ asset('assets/img/logo-ct-dark.png') }}" alt="Logo"></div>
+                        <div class="w-8 h-8 bg-white rounded-full p-0.5 mx-auto shadow-sm inline-block"><img src="{{ asset('assets/img/himpesda_logo.png') }}" alt="Logo"></div>
                         <p class="text-gray-800 font-bold text-xs leading-tight mt-1">HIMPESDA</p>
                         <p class="text-gray-500 text-[8px] leading-tight">Himpunan Profesional Pengelola Sumber Daya Air</p>
                     </div>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <link rel="icon" type="image/png" href="{{ asset('assets/img/himpesda_logo.png') }}" />
     <title>@yield('title', 'HIMPESDA') - Himpunan Profesional Pengelola Sumber Daya Air</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" xintegrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />    <link href="{{ asset('assets/css/nucleo-icons.css') }}" rel="stylesheet" />
@@ -15,7 +16,10 @@
     {{-- Header & Navigasi Dinamis --}}
     <header class="sticky top-0 z-50 w-full p-4">
         <nav class="max-w-7xl mx-auto bg-[var(--blue-dark)] text-yellow-300 shadow-xl rounded-full flex justify-between items-center px-6 py-3">
-            <a href="{{ route('home') }}" class="text-2xl font-bold tracking-wide">HIMPESDA</a>
+            <a href="{{ route('home') }}" class="text-2xl font-bold tracking-wide">
+                <img src="{{ asset('assets/img/himpesda_logo.png') }}" class="inline h-full max-w-full transition-all duration-200 dark:hidden ease-nav-brand max-h-8" alt="main_logo" />
+                HIMPESDA
+            </a>
             
             <ul class="hidden md:flex space-x-8 text-sm font-medium items-center">
                 <li class="relative group">
@@ -29,7 +33,7 @@
                         {{-- Tautan Dokumen Ditambahkan Disini --}}
                         <a href="{{ route('profil.anggaran-dasar') }}" class="block px-4 py-2   hover:bg-gray-700">Anggaran Dasar (AD)</a>
                         <a href="{{ route('profil.anggaran-rumah-tangga') }}" class="block px-4 py-2  hover:bg-gray-700">Anggaran Rumah Tangga (ART)</a>
-                        <a href="{{ route('profil.kode-etik') }}" class="block px-4 py-2 hover:bg-gray-700">Kode Etik</a>
+                        <a href="{{ route('profil.kode-etik') }}" class="block px-4 py-2 hover:bg-gray-700">Kode Etik & Kode Perilaku</a>
                     </div>
                 </li>
                 <li><a href="{{ route('berita.index') }}" class="hover:text-yellow-400 transition">Berita</a></li>
@@ -67,7 +71,7 @@
                             <li class="pt-1 mt-1 border-t border-gray-600"></li>
                             <li><a href="{{ route('profil.anggaran-dasar') }}" class="block px-4 py-2   hover:bg-gray-700">Anggaran Dasar (AD)</a></li>
                             <li><a href="{{ route('profil.anggaran-rumah-tangga') }}" class="block px-4 py-2  hover:bg-gray-700">Anggaran Rumah Tangga (ART)</a></li>
-                            <li><a href="{{ route('profil.kode-etik') }}" class="block px-4 py-2 hover:bg-gray-700">Kode Etik</a></li>
+                            <li><a href="{{ route('profil.kode-etik') }}" class="block px-4 py-2 hover:bg-gray-700">Kode Etik & Kode Perilaku</a></li>
                         </ul>
                     </li>
                     <li><a href="{{ route('berita.index') }}" class="block hover:text-yellow-400"><i class="fa-solid fa-newspaper mr-2"></i>Berita</a></li>
@@ -91,7 +95,10 @@
                 <div class="max-w-7xl mx-auto px-8 py-12">
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
                 <div class="lg:col-span-2">
-                    <h3 class="text-xl font-bold text-white mb-4">HIMPESDA</h3>
+                    <h3 class="text-xl font-bold text-white mb-4">
+                        <img src="{{ asset('assets/img/himpesda_logo.png') }}" class="inline h-full max-w-full transition-all duration-200 dark:hidden ease-nav-brand max-h-8" alt="main_logo" />
+                        HIMPESDA
+                    </h3>
                     <p class="text-sm pr-8">
                         HIMPESDA (Himpunan Profesional Pengelola Sumber Daya Air) merupakan organisasi yang mewadahi para profesional di bidang pengelolaan sumber daya air di Indonesia. Kami berkomitmen untuk meningkatkan kompetensi, memperkuat jejaring, serta mendorong kolaborasi antar anggota dalam rangka mewujudkan pengelolaan sumber daya air yang berkelanjutan dan bermanfaat bagi masyarakat. Melalui berbagai program pelatihan, seminar, dan kegiatan sosial, HIMPESDA berperan aktif dalam pengembangan keahlian, advokasi kebijakan, serta pemberdayaan anggota untuk menghadapi tantangan pengelolaan air di masa depan.
                     </p>

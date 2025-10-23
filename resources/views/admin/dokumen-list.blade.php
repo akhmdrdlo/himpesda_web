@@ -41,7 +41,7 @@
                                         @endif
                                     </td>
                                     <td class="px-6 py-4 text-center">
-                                        <a href="{{ route('admin.documents.edit', $document->id) }}" class="px-4 py-2 text-xs font-bold text-white bg-slate-700 rounded-lg">Ubah</a>
+                                        <a href="{{ route('admin.documents.edit', $document->id) }}" class="px-4 py-2 text-xs font-bold bg-primary text-white bg-blue-500 rounded-lg">Ubah</a>
                                     </td>
                                 </tr>
                                 @empty

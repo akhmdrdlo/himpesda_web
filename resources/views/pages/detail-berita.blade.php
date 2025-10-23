@@ -3,7 +3,7 @@
 @section('title', $berita->judul)
 
 @section('content')
-<div class="max-w-4xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+<div class="max-w-6xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
     <div class="bg-white dark:bg-gray-800 shadow-lg rounded-lg overflow-hidden">
         @if($berita->gambar)
             <img class="w-full h-96 object-cover" src="{{ asset('storage/' . $berita->gambar) }}" alt="{{ $berita->judul }}">
@@ -12,9 +12,14 @@
         <div class="p-6 md:p-10">
             <div class="mb-6">
                 <p class="text-sm text-gray-500">
-                    <a href="#" class="font-semibold text-blue-600">{{ $berita->kategori }}</a>
+                    <a href="#" class="font-semibold text-blue-600">{{ $berita->category->name ?? 'N/A' }}</a>
                     &bull;
-                    <span>{{ $berita->published_at->translatedFormat('d F Y') }}</span>
+                    <span>
+                        <td class="px-6 py-4">
+                        {{-- Jika published_at ada, format tanggalnya. Jika tidak, tampilkan '-' --}}
+                            {{ $berita->published_at ? $berita->published_at->translatedFormat('d F Y') : '-' }}
+                        </td>
+                    </span>
                     &bull;
                     <span>Oleh: {{ $berita->user->nama_lengkap ?? 'Tim HIMPESDA' }}</span>
                 </p>
