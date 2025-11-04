@@ -67,7 +67,7 @@ class AnggotaController extends Controller
 
         Excel::import(new AnggotaImport, $request->file('file'));
 
-        return redirect()->route('admin.anggota.anggota.index')->with('success', 'Data anggota berhasil diimpor!');
+        return redirect()->route('admin.anggota.index')->with('success', 'Data anggota berhasil diimpor!');
     }
 
     /**
@@ -80,7 +80,6 @@ class AnggotaController extends Controller
     }
 
     /**
-     * Memproses dan menyimpan perubahan data anggota.
      * Memproses dan menyimpan perubahan data anggota.
      */
     public function update(Request $request, $id)
@@ -103,7 +102,6 @@ class AnggotaController extends Controller
             'pas_foto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
             'provinsi' => 'nullable|string|max:255',
             'kabupaten_kota' => 'nullable|string|max:255',
-            // Validasi tipe anggota: hanya 'pusat' atau 'daerah'
             'tipe_anggota' => 'required|in:pusat,daerah',
         ]);
 
@@ -140,8 +138,16 @@ class AnggotaController extends Controller
      */
     public function destroy($id)
     {
-        // Logika untuk menghapus akan kita implementasikan nanti.
-        // Untuk saat ini, kita hanya redirect kembali.
-        return redirect()->route('admin.anggota.index')->with('info', 'Fungsi hapus belum diimplementasikan.');
+        // FIX 2: Implementasi logika hapus yang sebenarnya
+        $anggota = User::findOrFail($id);
+        
+        // Hapus foto jika ada
+        if ($anggota->pas_foto) {
+            Storage::disk('public')->delete($anggota->pas_foto);
+        }
+        
+        $anggota->delete();
+        
+        return redirect()->route('admin.anggota.index')->with('success', 'Anggota berhasil dihapus.');
     }
 }
