@@ -3,161 +3,235 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ekspor Semua Kartu Anggota</title>
+    <title>Ekspor Kartu Anggota - Bulk</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=inter:400,600,700&display=swap" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         body {
-            background-color: #e2e8f0; /* bg-slate-200 */
             font-family: 'Inter', sans-serif;
-            -webkit-print-color-adjust: exact;
-            print-color-adjust: exact;
+            background-color: #e2e8f0; /* bg-slate-200 */
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
         }
-        .card-container {
-            width: 204px; /* 53.98mm */
-            height: 323px; /* 85.6mm */
+
+        /* Ukuran Kartu Vertikal Standar CR-80 */
+        .id-card {
+            width: 53.98mm;
+            height: 85.6mm;
+            position: relative;
+            overflow: hidden;
+            background-color: white;
+            border: 1px solid #cbd5e1; /* Border tipis untuk panduan potong */
         }
+
+        /* Kontainer per Anggota (Depan + Belakang) */
+        .member-row {
+            display: flex;
+            gap: 2mm; /* Jarak lipat antara depan dan belakang */
+            justify-content: center;
+            margin-bottom: 5mm; /* Jarak antar anggota ke bawah */
+            break-inside: avoid; /* Mencegah kartu terpotong beda halaman */
+            page-break-inside: avoid;
+        }
+
+        /* Pattern Background */
+        .bg-pattern {
+            background-image: radial-gradient(#ffffff 15%, transparent 16%), radial-gradient(#ffffff 15%, transparent 16%);
+            background-size: 10px 10px;
+            background-position: 0 0, 5px 5px;
+            opacity: 0.1;
+        }
+
         @media print {
-            @page {
-                size: A4; /* Mengatur ukuran kertas A4 */
-                margin: 1cm; /* Memberi margin pada halaman cetak */
-            }
             body {
-                background-color: #fff;
+                background-color: white;
                 margin: 0;
-                padding: 0;
+                padding: 5mm; /* Margin aman printer */
             }
             .no-print {
-                display: none;
+                display: none !important;
             }
-            .printable-area {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr); /* 2 kartu per baris */
-                gap: 10px;
-                width: 100%;
+            .id-card {
+                box-shadow: none; /* Hilangkan bayangan saat print untuk hemat tinta */
+                border: 1px dashed #94a3b8; /* Garis putus-putus halus untuk potong */
             }
-            .card-wrapper {
-                page-break-inside: avoid; /* Mencegah kartu terpotong antar halaman */
-                display: flex;
-                gap: 10px;
-                margin-bottom: 10px;
-            }
-            .card-container {
-                box-shadow: none;
-                border: 1px solid #eee;
+            .member-row {
+                margin-bottom: 5mm;
             }
         }
     </style>
 </head>
-<body class="flex flex-col items-center min-h-screen p-8">
+<body class="py-10">
 
-    <div class="mb-8 no-print w-full max-w-7xl">
-        <div class="bg-white p-4 rounded-lg shadow-md flex justify-between items-center">
-            <div>
-                <h1 class="text-xl font-bold">Ekspor Kartu Anggota</h1>
-                <p class="text-sm text-gray-600">Total Anggota: {{ count($users) }}. Halaman ini siap untuk dicetak.</p>
+    @php
+        $totalMembers = $users->count();
+        $pusatCount = $users->filter(function($u){
+            return in_array($u->level, ['admin','operator','bendahara']) || (($u->tipe_anggota ?? '') === 'pusat');
+        })->count();
+        $daerahCount = $totalMembers - $pusatCount;
+    @endphp
+
+    <div class="no-print fixed top-6 right-6 z-50 bg-white/90 backdrop-blur-sm border border-slate-200 rounded-lg shadow-lg p-3 w-80 flex items-start gap-3">
+        <div class="flex-1">
+            <div class="flex items-center justify-between">
+                <div>
+                    <div class="text-xs text-slate-500 uppercase tracking-wide">Ringkasan Cetak</div>
+                    <div class="mt-1 text-sm font-semibold text-slate-800 flex items-center gap-2">
+                        <i class="fas fa-users text-yellow-500"></i>
+                        <span>{{ $totalMembers }} Anggota</span>
+                    </div>
+                </div>
+                <div class="text-xs text-slate-400">PDF / Print</div>
             </div>
-            <div>
-                <button onclick="window.print()" class="px-6 py-2 font-semibold text-white bg-blue-600 rounded-lg shadow-md hover:bg-blue-700">
-                    Cetak Semua Kartu
-                </button>
-                <a href="{{ url()->previous() }}" class="px-6 py-2 font-semibold text-gray-700 bg-gray-200 rounded-lg hover:bg-gray-300 ml-2">
-                    Kembali
-                </a>
+
+            <div class="mt-3 grid grid-cols-2 gap-2 text-[12px]">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 flex items-center justify-center rounded bg-slate-100 text-slate-700">
+                        <i class="fas fa-city"></i>
+                    </div>
+                    <div>
+                        <div class="text-[11px] text-slate-500">Pusat</div>
+                        <div class="font-medium text-slate-800">{{ $pusatCount }}</div>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 flex items-center justify-center rounded bg-slate-100 text-slate-700">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div>
+                        <div class="text-[11px] text-slate-500">Daerah</div>
+                        <div class="font-medium text-slate-800">{{ $daerahCount }}</div>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+            <button onclick="window.print()" class="flex items-center px-3 py-2 bg-yellow-500 text-white rounded-md shadow hover:bg-yellow-600 text-sm" aria-label="Cetak daftar anggota">
+                <i class="fas fa-print mr-2"></i> Cetak
+            </button>
+            <button onclick="window.close()" class="flex items-center px-3 py-2 bg-slate-50 text-slate-700 rounded-md border border-slate-200 hover:bg-slate-100 text-sm" aria-label="Tutup jendela">
+                <i class="fas fa-times mr-2"></i> Tutup
+            </button>
         </div>
     </div>
 
-    <div class="w-full max-w-7xl printable-area">
+    <div class="max-w-[210mm] mx-auto bg-white min-h-screen p-4 shadow-xl print:shadow-none print:p-0">
+        
         @foreach($users as $user)
             @php
-                $tahunDibuat = \Carbon\Carbon::parse($user->created_at)->year;
-                $tahunBerakhir = $tahunDibuat + 3;
-                $periode = $tahunDibuat . ' - ' . $tahunBerakhir;
-                $expiryDate = "31 Desember " . $tahunBerakhir;
+                // Logika Data (Sama seperti single card)
+                $createdAt = \Carbon\Carbon::parse($user->activated_at ?? $user->created_at);
+                $expiryDate = "31 Des " . ($createdAt->year + 3);
+
+                $isPusat = in_array($user->level, ['admin', 'operator', 'bendahara']) || $user->tipe_anggota == 'pusat';
+                $cabangText = $isPusat ? 'PUSAT (NASIONAL)' : strtoupper($user->provinsi ?? 'DAERAH');
             @endphp
-            
-            <div class="card-wrapper">
-                <!-- Card Front (Vertical) -->
-                <div class="card-container bg-gray-900 rounded-xl shadow-lg overflow-hidden relative flex flex-col">
-                    <!-- Background Shapes -->
-                    <div class="absolute top-0 left-0 w-full h-full">
-                        <svg width="204" height="323" viewBox="0 0 204 280" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute w-full h-full" preserveAspectRatio="none">
-                            <path d="M0 0 H204 V70 C170 95, 80 65, 0 85 Z" fill="#00529B"/>
-                            <path d="M0 323 H204 V260 C120 240, 80 270, 0 250 Z" fill="#FFD700"/>
-                        </svg>
-                    </div>
+
+            <div class="member-row">  
+                <div class="id-card rounded-xl flex flex-col">
+                    <div class="absolute inset-0 bg-gradient-to-br from-slate-900 to-slate-800 z-0"></div>
+                    <div class="absolute inset-0 bg-pattern z-0"></div>
                     
-                    <!-- Card Content -->
-                    <div class="relative z-10 p-4 flex flex-col h-full">
-                        <!-- Header -->
-                        <div class="flex items-center space-x-2">
-                            <div class="w-10 h-10 bg-white rounded-full p-1 flex-shrink-0"><img src="{{ asset('assets/img/himpesda_logo.png') }}" alt="Logo"></div>
+                    <div class="absolute -bottom-10 -right-10 w-40 h-40 opacity-10 z-0 rotate-12">
+                        <img src="{{ asset('assets/img/himpesda_logo.png') }}" class="w-full h-full object-contain grayscale">
+                    </div>
+
+                    <div class="absolute top-0 right-0 w-24 h-24 bg-yellow-500 rounded-bl-full opacity-90 z-10" style="clip-path: circle(70% at 100% 0);"></div>
+                    <div class="absolute bottom-0 left-0 w-full h-2 bg-gradient-to-r from-yellow-500 to-yellow-300 z-10"></div>
+
+                    <div class="relative z-20 flex flex-col h-full text-white p-4">
+                        
+                        <div class="flex items-center gap-2 mb-3">
+                            <div class="w-10 h-10 bg-white rounded-full p-1 flex items-center justify-center shadow-md shrink-0">
+                                <img src="{{ asset('assets/img/himpesda_logo.png') }}" alt="Logo" class="w-full h-full object-contain">
+                            </div>
                             <div>
-                                <p class="text-white font-bold text-base leading-tight">HIMPESDA</p>
-                                <p class="text-blue-200 text-[8px] leading-tight">Himpunan Profesional Pengelola Sumber Daya Air</p>
+                                <h1 class="font-black text-sm tracking-wider leading-tight">HIMPESDA</h1>
+                                <p class="text-[6px] text-slate-300 leading-tight uppercase tracking-wide">Himpunan Profesional Pengelola<br>Sumber Daya Air</p>
                             </div>
                         </div>
 
-                        <!-- Main Content -->
-                        <div class="flex-grow flex flex-col items-center justify-center text-center">
-                            <div class="bg-red-600 p-1 rounded-md shadow-lg">
-                            <div class="w-[84px] h-[100px] overflow-hidden rounded-sm">
-                                <img src="{{ asset('storage/' . $user->pas_foto) }}" alt="Pas Foto" class="w-full h-full object-cover">
+                        <div class="flex justify-center mb-3">
+                            <div class="w-24 h-24 rounded-full border-4 border-yellow-500 shadow-xl overflow-hidden bg-slate-200">
+                                @if($user->pas_foto)
+                                    <img src="{{ asset('storage/' . $user->pas_foto) }}" class="w-full h-full object-cover">
+                                @else
+                                    <img src="{{ asset('assets/img/team-2.jpg') }}" class="w-full h-full object-cover grayscale">
+                                @endif
                             </div>
+                        </div>
+
+                        <div class="text-center flex-grow">
+                            <h2 class="font-bold text-sm uppercase leading-tight mb-1 drop-shadow-md">
+                                {{ Str::limit($user->nama_lengkap, 35) }}
+                            </h2>
+                            <p class="text-[8px] font-semibold text-yellow-400 tracking-widest uppercase mb-3">
+                                {{ $user->jabatan_fungsional ?? 'ANGGOTA' }}
+                            </p>
+
+                            <div class="inline-block bg-white/10 backdrop-blur-sm px-3 py-1 rounded border border-white/20">
+                                <p class="text-[7px] text-slate-300 uppercase tracking-wider mb-0.5">Nomor Anggota</p>
+                                <p class="font-mono font-bold text-sm tracking-widest leading-none">{{ $user->nomor_anggota ?? 'PENDING' }}</p>
                             </div>
-                            <div class="text-white mt-3">
-                                <p class="font-bold text-sm tracking-wide">{{ $user->nama_lengkap }}</p>
-                                <div class="mt-2 text-[10px] space-y-1">
-                                    <p>
-                                        <span class="opacity-80">No. Anggota</span>
-                                        <span class="font-semibold">: {{ $user->nomor_anggota ?? 'N/A' }}</span>
-                                    </p>
-                                    <p>
-                                        <span class="opacity-80">Cabang</span>
-                                        <span class="font-semibold">: {{ strtoupper($user->cabang_display) }}</span> 
-                                    </p>
+                        </div>
+
+                        <div class="mt-auto pt-2 text-center">
+                            <p class="text-[7px] uppercase text-slate-400 tracking-widest">Wilayah / Cabang</p>
+                            <p class="font-bold text-[9px] text-white uppercase">{{ Str::limit($cabangText, 30) }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="id-card rounded-xl flex flex-col bg-white relative border border-slate-200">
+                    
+                    <div class="bg-slate-900 h-10 w-full flex items-center justify-center relative overflow-hidden">
+                        <div class="absolute inset-0 bg-pattern opacity-20"></div>
+                        <p class="text-white text-[10px] font-bold tracking-[0.2em] z-10 uppercase">Kartu Tanda Anggota</p>
+                    </div>
+
+                    <div class="p-4 flex flex-col h-full bg-[url('{{ asset('assets/img/himpesda_logo.png') }}')] bg-no-repeat bg-center bg-[length:80%]">
+                        <div class="absolute inset-0 bg-white/90"></div>
+
+                        <div class="relative z-10 flex flex-col h-full text-center">
+                            
+                            <div class="text-[7px] text-slate-600 text-justify leading-relaxed space-y-1.5 mb-3">
+                                <p>1. Kartu ini adalah bukti sah keanggotaan HIMPESDA.</p>
+                                <p>2. Segala fasilitas dan hak anggota berlaku selama kartu ini masih aktif.</p>
+                                <p>3. Apabila kartu ini ditemukan, mohon dikembalikan ke Sekretariat HIMPESDA atau hubungi kontak di bawah.</p>
+                            </div>
+
+                            <div class="flex-grow flex flex-col items-center justify-center">
+                                <div class="w-full border-t border-slate-100 my-2"></div>
+                                <p class="text-[6px] text-slate-400 italic">HIMPESDA Membership Card</p>
+                            </div>
+
+                            <div class="mt-auto flex justify-between items-end text-left w-full">
+                                <div>
+                                    <p class="text-[6px] text-slate-400 uppercase">Berlaku Hingga</p>
+                                    <p class="text-[10px] font-bold text-slate-800">{{ $expiryDate }}</p>
+                                </div>
+                                <div class="text-right">
+                                    <p class="text-[5px] text-slate-400 uppercase tracking-wider">Nomor KTA</p>
+                                    <p class="text-[10px] font-black text-slate-800 tracking-widest font-mono">{{ $user->nomor_anggota ?? '---' }}</p>
                                 </div>
                             </div>
+
+                            <div class="mt-3 pt-1 border-t border-slate-100">
+                                <p class="text-[6px] text-slate-500 font-mono">www.himpesda.or.id | info@himpesda.or.id</p>
+                            </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- Card Back (Vertical) -->
-                <div class="card-container bg-white rounded-xl shadow-lg overflow-hidden relative flex flex-col">
-                    <!-- Background Shapes -->
-                    <div class="absolute top-0 left-0 w-full h-full">
-                        <svg width="204" height="323" viewBox="0 0 204 323" fill="none" xmlns="http://www.w3.org/2000/svg" class="absolute w-full h-full" preserveAspectRatio="none">
-                            <path d="M0 0 H204 V20 C150 40, 50 10, 0 25 Z" fill="#FFD700"/>
-                            <path d="M0 323 H204 V280 C150 260, 50 300, 0 290 Z" fill="#00529B"/>
-                        </svg>
-                    </div>
-                    <div class="relative z-10 flex flex-col h-full">
-                        <div class="bg-gray-800 text-white font-bold text-center py-1.5 text-xs tracking-widest">
-                            KARTU TANDA ANGGOTA
-                        </div>
-                        <div class="p-4 flex flex-col h-full">
-                            <div class="text-center my-1">
-                                <div class="w-8 h-8 bg-white rounded-full p-0.5 mx-auto shadow-sm inline-block"><img src="{{ asset('assets/img/himpesda_logo.png') }}" alt="Logo"></div>
-                                <p class="text-gray-800 font-bold text-xs leading-tight mt-1">HIMPESDA</p>
-                                <p class="text-gray-500 text-[8px] leading-tight">Himpunan Profesional Pengelola Sumber Daya Air</p>
-                            </div>
-                            <div class="text-[9px] text-gray-700 space-y-2 mt-4 flex-grow">
-                                <p>1. Kartu ini berlaku selama pemegang kartu ini menjadi Anggota dan Pengurus HIMPESDA {{ $periode }}.</p>
-                                <p>2. Jika kartu ini hilang/rusak harap dapat segera menghubungi Sekretariat HIMPESDA.</p>
-                                <p>3. Terima kasih bagi yang menemukan kartu ini harap dapat menghubungi Sekretariat HIMPESDA.</p>
-                            </div>
-                            <div class="text-center mt-2">
-                                <p class="text-[9px] text-white">Kartu ini berlaku sampai dengan</p>
-                                <p class="font-bold text-xs text-white">{{ $expiryDate }}</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         @endforeach
-    </div>
 
+    </div>
 </body>
 </html>

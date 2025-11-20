@@ -5,28 +5,56 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Berita;
 use App\Models\Himpunan;
-use App\Models\Pendaftar;
+use App\Models\User;
+use App\Models\Document;
 use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
+    /**
+     * Menampilkan Halaman Beranda Publik
+     */
     public function home()
     {
-        // 1. Ambil data baris pertama dari tabel 'organisasis'
         $himpunan = Himpunan::first();
+        $beritaTerbaru = Berita::with('user', 'category')->where('status', 'published')->latest('published_at')->take(5)->get();
+        
+        $jumlahAnggota = User::where('level', 'anggota')->count(); 
+        $jumlahAnggotaPusat = User::where('tipe_anggota', 'pusat')->where('level', 'anggota')->count();
+        $jumlahAnggotaDaerah = User::where('tipe_anggota', 'daerah')->where('level', 'anggota')->count();
 
-        // 2. Ambil 3 berita terbaru dari tabel 'berita'
-        $beritaTerbaru = Berita::latest()->take(3)->get();
-
-        // 3. Tampilkan view 'pages.home' dan kirim kedua data tersebut ke dalamnya
-        return view('pages.home', compact('himpunan', 'beritaTerbaru'));
+        $youtubePost = Berita::where('kategori', 5)->latest('published_at')->first();
+        $instagramPost = Berita::where('kategori', 6)->latest('published_at')->first();
+        $xPost = Berita::where('kategori', 7)->latest('published_at')->first();
+        
+        return view('beranda', compact(
+            'himpunan', 'beritaTerbaru', 'jumlahAnggota',
+            'jumlahAnggotaPusat', 'jumlahAnggotaDaerah',
+            'youtubePost', 'instagramPost', 'xPost'
+        ));
     }
 
-    public function dashboard() { return view('admin.dashboard'); }
-    public function daftarAnggota() { return view('admin.daftar-anggota'); }
-    public function detailAnggota() { return view('admin.detail-anggota'); }
-    public function profileAdmin() { return view('admin.profile-admin'); }
-    public function konfirmasiPembayaran() { return view('admin.konfirmasi-pembayaran'); }
+    // --- METHOD UNTUK HALAMAN DOKUMEN ---
+    public function kodeEtik()
+    {
+        $document = Document::where('slug', 'kode-etik')->firstOrFail();
+        return view('pages.dokumen-detail', compact('document'));
+    }
 
+    public function anggaranDasar()
+    {
+        $document = Document::where('slug', 'anggaran-dasar')->firstOrFail();
+        return view('pages.dokumen-detail', compact('document'));
+    }
 
+    public function anggaranRumahTangga()
+    {
+        $document = Document::where('slug', 'anggaran-rumah-tangga')->firstOrFail();
+        return view('pages.dokumen-detail', compact('document'));
+    }
+
+    /* Semua method admin (dashboard, daftarAnggota, dll.)
+    telah dihapus dari sini karena sekarang ditangani
+    oleh controller-nya masing-masing.
+    */
 }

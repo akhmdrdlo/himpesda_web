@@ -12,9 +12,8 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Mengubah ENUM untuk menambahkan 'bendahara'
-            $table->enum('level', ['admin', 'operator','operator_daerah', 'bendahara', 'bendahara_daerah', 'anggota'])
-                ->default('anggota')->change();
+            // Kolom untuk melacak status pendaftaran: pending, awaiting_payment, payment_review, active, rejected
+            $table->timestamp('activated_at')->nullable()->after('status_pengajuan');
         });
     }
 
@@ -24,7 +23,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropColumn('activated_at');
         });
     }
-};
+};  

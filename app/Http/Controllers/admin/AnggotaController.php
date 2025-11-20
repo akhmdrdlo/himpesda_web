@@ -20,7 +20,16 @@ class AnggotaController extends Controller
      */
     public function index()
     {
-        $anggota = User::where('level', 'anggota')->latest()->get();
+        $user = Auth::user();
+        $query = User::where('level', 'anggota');
+
+        // Filter Wilayah untuk Staff Daerah
+        if (in_array($user->level, ['operator_daerah', 'bendahara_daerah'])) {
+            $query->where('provinsi', $user->provinsi);
+        }
+        
+        $anggota = $query->latest()->get();
+        
         return view('admin.anggota.daftar-anggota', compact('anggota'));
     }
 
@@ -79,7 +88,7 @@ class AnggotaController extends Controller
         return view('admin.anggota.edit-anggota', compact('anggota'));
     }
 
-    /**
+/**
      * Memproses dan menyimpan perubahan data anggota.
      */
     public function update(Request $request, $id)
@@ -103,26 +112,35 @@ class AnggotaController extends Controller
             'provinsi' => 'nullable|string|max:255',
             'kabupaten_kota' => 'nullable|string|max:255',
             'tipe_anggota' => 'required|in:pusat,daerah',
+            // TAMBAHAN VALIDASI LEVEL
+            'level' => 'required|string|in:admin,operator,operator_daerah,bendahara,bendahara_daerah,anggota',
         ]);
 
         // Memisahkan file dari data teks
         $dataToUpdate = $request->except(['pas_foto', '_token', '_method']);
 
+        // --- LOGIKA KEAMANAN LEVEL (ROLE) ---
+        // Cek apakah user yang login adalah Admin atau Operator
+        if (in_array(Auth::user()->level, ['admin', 'operator'])) {
+            // Jika ya, gunakan level dari input form
+            $dataToUpdate['level'] = $request->level;
+        } else {
+            // Jika bukan (misal: operator daerah iseng inspect element), 
+            // kembalikan level ke level aslinya di database.
+            $dataToUpdate['level'] = $anggota->level;
+        }
+
         // --- Logika Khusus untuk Tipe Anggota ---
-        // Hanya admin yang bisa mengubah tipe anggota
+        // Hanya admin yang bisa mengubah tipe anggota (Sesuai request sebelumnya)
         if (Auth::user()->level != 'admin') {
-            // Jika bukan admin, paksa tipe anggota kembali ke nilai asli sebelum update
             $dataToUpdate['tipe_anggota'] = $anggota->tipe_anggota;
         }
-        // Jika admin, nilai dari form ($request->tipe_anggota) akan digunakan
 
         // Handle upload foto jika ada file baru
         if ($request->hasFile('pas_foto')) {
-            // Hapus foto lama jika ada
             if ($anggota->pas_foto) {
                 Storage::disk('public')->delete($anggota->pas_foto);
             }
-            // Simpan foto baru dan dapatkan path-nya
             $path = $request->file('pas_foto')->store('profil-fotos', 'public');
             $dataToUpdate['pas_foto'] = $path;
         }

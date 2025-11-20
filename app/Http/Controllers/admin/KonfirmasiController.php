@@ -3,97 +3,110 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Pendaftar;
+use App\Models\Pembayaran;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Carbon; // Import Carbon untuk mengisi activated_at
 
 class KonfirmasiController extends Controller
 {
-    // Fungsi terpusat untuk otorisasi halaman ini
+    /**
+     * Fungsi terpusat untuk otorisasi halaman ini
+     */
     private function authorizeAccess()
     {
-        if (!in_array(auth()->user()->level, ['admin', 'bendahara'])) {
+        // Tambahkan bendahara_daerah ke array izin
+        if (!in_array(auth()->user()->level, ['admin', 'bendahara', 'bendahara_daerah'])) {
             abort(403, 'ANDA TIDAK MEMILIKI AKSES KE HALAMAN INI.');
         }
     }
 
+    /**
+     * Menampilkan halaman daftar konfirmasi pembayaran.
+     * Logika ini menggantikan index() lama.
+     */
     public function index()
     {
-        $this->authorizeAccess(); 
-        $pendaftar = Pendaftar::whereNotIn('status_anggota', ['Aktif', 'Ditolak'])->latest()->get();
-        $menungguKonfirmasi = $pendaftar->count();
-        $anggotaTerdaftar = User::where('level', 'anggota')->count();
-        return view('admin.pendaftar.konfirmasi-pembayaran', compact('pendaftar', 'menungguKonfirmasi', 'anggotaTerdaftar'));
-    }
+        $this->authorizeAccess();
 
-    public function show(Pendaftar $pendaftar)
-    {
-        $this->authorizeAccess(); // Panggil pengecekan di sini
-        // Dengan Route Model Binding, Laravel otomatis mencari pendaftar berdasarkan ID dari URL
-        return view('admin.pendaftar.detail-pendaftar', compact('pendaftar'));
+        // Ambil data pembayaran yang masih 'pending'
+        // 'with('user')' untuk eager loading data user (efisien)
+        $pembayaranPending = Pembayaran::with('user')
+                            ->where('status', 'pending')
+                            ->whereHas('user', function ($query) {
+                                // Pastikan user-nya juga dalam status 'payment_review'
+                                $query->where('status_pengajuan', 'payment_review');
+                            })
+                            ->latest()
+                            ->get();
+        
+        // Ambil statistik
+        $menungguKonfirmasi = $pembayaranPending->count();
+        // Hitung anggota terdaftar (juga difilter per wilayah)
+        $anggotaQuery = User::where('status_pengajuan', 'active');
+        if ($user->level == 'bendahara_daerah') {
+            $anggotaQuery->where('provinsi', $user->provinsi);
+        }
+        $anggotaTerdaftar = $anggotaQuery->count();
+
+        return view('admin..pendaftar.konfirmasi-pembayaran', compact('pembayaranPending', 'menungguKonfirmasi', 'anggotaTerdaftar'));
     }
 
     /**
-     * Update status pendaftar dan promosikan menjadi anggota jika syarat terpenuhi.
+     * Menyetujui pembayaran (Aksi Bendahara).
+     * Di sinilah 'activated_at' diisi.
      */
-    public function updateStatus(Request $request, Pendaftar $pendaftar)
+    public function approve(Pembayaran $pembayaran)
     {
-        $this->authorizeAccess(); // Panggil pengecekan di sini
-        $request->validate([
-            'status_pembayaran' => 'required|in:Belum Lunas,Sudah Lunas',
-            'status_anggota' => 'required|in:Menunggu Konfirmasi,Sedang Diproses,Aktif,Ditolak',
+        $this->authorizeAccess();
+
+        // 1. Update status pembayaran
+        $pembayaran->update([
+            'status' => 'approved',
+            'catatan_admin' => 'Dikonfirmasi oleh ' . auth()->user()->nama_lengkap,
         ]);
 
-        // Jika status tidak diubah menjadi "Aktif", cukup update statusnya saja
-        if ($request->status_pembayaran !== 'Sudah Lunas' || $request->status_anggota !== 'Aktif') {
-            $pendaftar->status_pembayaran = $request->status_pembayaran;
-            $pendaftar->status_anggota = $request->status_anggota;
-            $pendaftar->save();
+        // 2. Dapatkan user terkait
+        $user = $pembayaran->user;
 
-            return redirect()->route('admin.konfirmasi.index')->with('success', 'Status untuk ' . $pendaftar->nama_lengkap . ' berhasil diperbarui.');
-        }
+        // 3. Generate Nomor KTA (Kartu Tanda Anggota)
+        $kodeProvinsi = $user->provinsi_id ?? '00'; // '00' jika provinsi_id null
+        $nomorUrut = str_pad($user->id, 4, '0', STR_PAD_LEFT); 
+        $nomorKTA = $kodeProvinsi . $nomorUrut;
 
-        // --- PROSES PROMOSI MENJADI ANGGOTA AKTIF ---
-        try {
-            // Gunakan provinsi_id dari pendaftar sebagai awalan KTA
-            $kodeProvinsi = $pendaftar->provinsi_id; 
-            $nomorUrut = str_pad($pendaftar->id, 4, '0', STR_PAD_LEFT); 
-            $nomorKTA = $kodeProvinsi . $nomorUrut; 
+        // 4. Update status user menjadi 'active'
+        $user->update([
+            'status_pengajuan' => 'active',
+            'nomor_anggota' => $nomorKTA,
+            'activated_at' => Carbon::now(), // <-- KODE DI SINI: Mengisi tanggal aktivasi
+        ]);
 
-            // Pindahkan data pendaftar ke tabel users
-            User::create([
-                'nomor_anggota' => $nomorKTA,
-                'provinsi_id' => $pendaftar->provinsi_id, 
-                'nama_lengkap' => $pendaftar->nama_lengkap,
-                'email' => $pendaftar->email,
-                'password' => $pendaftar->password, 
-                'no_telp' => $pendaftar->no_telp,
-                'nip' => $pendaftar->nip,
-                'jenis_kelamin' => $pendaftar->jenis_kelamin,
-                'tanggal_lahir' => $pendaftar->tanggal_lahir,
-                'agama' => $pendaftar->agama,
-                'npwp' => $pendaftar->npwp,
-                'asal_instansi' => $pendaftar->asal_instansi,
-                'unit_kerja' => $pendaftar->unit_kerja,
-                'jabatan_fungsional' => $pendaftar->jabatan_fungsional,
-                'gol_ruang' => $pendaftar->gol_ruang,
-                'pas_foto' => $pendaftar->pas_foto,
-                'level' => 'anggota',
-                'provinsi' => $pendaftar->provinsi,
-                'kabupaten_kota' => $pendaftar->kabupaten_kota,
-            ]);
-
-            // Hapus data dari tabel pendaftar setelah berhasil dipromosikan
-            $pendaftar->delete();
-
-            return redirect()->route('admin.konfirmasi.index')->with('success', $pendaftar->nama_lengkap . ' telah berhasil diaktifkan menjadi anggota dengan KTA: ' . $nomorKTA);
-
-        } catch (\Exception $e) {
-            // Jika terjadi error, kembalikan dengan pesan error
-            return redirect()->route('admin.konfirmasi.index')->with('error', 'Gagal mengaktifkan anggota: ' . $e->getMessage());
-        }
+        return redirect()->route('admin.konfirmasi.index')->with('success', 'Pembayaran untuk ' . $user->nama_lengkap . ' berhasil dikonfirmasi. Anggota kini aktif.');
     }
 
+    /**
+     * Menolak pembayaran (Aksi Bendahara).
+     */
+    public function reject(Request $request, Pembayaran $pembayaran)
+    {
+        $this->authorizeAccess();
 
+        $request->validate([
+            'catatan_penolakan' => 'required|string|max:255',
+        ]);
+
+        // 1. Update status pembayaran
+        $pembayaran->update([
+            'status' => 'rejected',
+            'catatan_admin' => $request->catatan_penolakan,
+        ]);
+
+        // 2. Kembalikan status user ke 'awaiting_payment' agar bisa upload ulang
+        $pembayaran->user->update([
+            'status_pengajuan' => 'awaiting_payment',
+            'catatan_penolakan' => $request->catatan_penolakan,
+        ]);
+
+        return redirect()->route('admin.konfirmasi.index')->with('success', 'Pembayaran untuk ' . $pembayaran->user->nama_lengkap . ' telah ditolak.');
+    }
 }

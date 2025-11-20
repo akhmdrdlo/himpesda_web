@@ -23,7 +23,11 @@ class AuthServiceProvider extends ServiceProvider
     public function boot(): void
     {
         $this->registerPolicies();
-
+        // Tambahkan baris ini untuk memaksa Carbon pakai format Indonesia & WIB
+        config(['app.locale' => 'id']);
+        Carbon::setLocale('id');
+        date_default_timezone_set('Asia/Jakarta');
+        
         // Definisi Gate untuk hak akses berita
         // PASTIKAN TYPE HINT DI SINI JUGA BENAR: (User $user)
         Gate::define('create-news', function (User $user) {

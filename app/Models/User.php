@@ -38,6 +38,9 @@ class User extends Authenticatable
         'jabatan_fungsional',
         'gol_ruang',
         'pas_foto',
+        'status_pengajuan',
+        'activated_at',
+        'catatan_admin',
     ];
 
 

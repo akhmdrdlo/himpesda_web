@@ -29,7 +29,6 @@
     <form action="{{ route('pendaftaran.store') }}" method="POST" enctype="multipart/form-data" class="bg-white p-8 rounded-xl shadow-lg space-y-8">
         @csrf
 
-        <!-- Section 1: Data Diri -->
         <div>
             <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-6">Data Diri</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -76,7 +75,6 @@
             </div>
         </div>
 
-        <!-- Section 2: Data Kepegawaian & Instansi -->
         <div>
             <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-6">Data Kepegawaian & Instansi</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -119,33 +117,25 @@
             </div>
         </div>
 
-        <!-- Section 3: Alamat Domisili -->
         <div>
             <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-6">Alamat Domisili</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                  <div>
                     <label for="select-provinsi" class="block mb-2 text-sm font-semibold">Provinsi</label>
                     <select name="provinsi" id="select-provinsi" class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200" required>
-                        @foreach($provinsiList ?? [] as $provinsi)
-                            <option value="{{ $provinsi->id }}" {{ old('provinsi') == $provinsi->id ? 'selected' : '' }}>{{ $provinsi->nama }}</option>
-                        @endforeach
+                        {{-- Opsi akan diisi oleh JavaScript --}}
                     </select>
-                    <input type="hidden" name="provinsi_id" id="provinsi-id">
+                    <input type="hidden" name="provinsi_id" id="provinsi-id" value="{{ old('provinsi_id') }}">
                 </div>
                 <div>
                     <label for="select-kabupaten" class="block mb-2 text-sm font-semibold">Kabupaten/Kota</label>
                     <select name="kabupaten_kota" id="select-kabupaten" class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200" required>
-                        @if(old('provinsi') && isset($kabupatenList))
-                            @foreach($kabupatenList as $kabupaten)
-                                <option value="{{ $kabupaten->id }}" {{ old('kabupaten_kota') == $kabupaten->id ? 'selected' : '' }}>{{ $kabupaten->nama }}</option>
-                            @endforeach
-                        @endif
+                       <option value="">-- Pilih Provinsi Dulu --</option>
                     </select>
                 </div>
             </div>
         </div>
 
-        <!-- Section 4: Pengaturan Akun -->
         <div>
             <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-6">Pengaturan Akun</h3>
              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -164,7 +154,6 @@
             </div>
         </div>
 
-        <!-- Section 5: Unggah Berkas -->
         <div>
             <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-6">Unggah Berkas</h3>
             <div class="space-y-6">
@@ -174,13 +163,8 @@
                            class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm p-2 transition-all duration-200"
                            required>
                 </div>
-                <div>
-                    <label for="bukti_pembayaran" class="block mb-2 text-sm font-semibold">Bukti Pembayaran (JPG, PNG, PDF, maks 2MB)</label>
-                    <input type="file" id="bukti_pembayaran" name="bukti_pembayaran"
-                           class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm p-2 transition-all duration-200"
-                           required>
+                
                 </div>
-            </div>
         </div>
         
         <button type="submit" class="w-full bg-[var(--blue-dark)] text-white font-semibold py-3 rounded-lg hover:bg-opacity-90 transition">Kirim Permohonan Pendaftaran</button>
@@ -189,50 +173,67 @@
 @endsection
 
 @push('scripts')
+{{-- Tambahkan CSS Select2 yang hilang dari file Anda --}}
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
     $(document).ready(function() {
         // Inisialisasi Select2
         $('#select-provinsi').select2({
-            width: '100%'
+            width: '100%',
+            placeholder: 'Pilih Provinsi Anda',
         });
         $('#select-kabupaten').select2({
-            width: '100%'
+            width: '100%',
+            placeholder: 'Pilih Kabupaten/Kota Anda',
         });
 
        // Mengambil data Provinsi
         $.getJSON('https://ibnux.github.io/data-indonesia/provinsi.json', function(data) {
             $('#select-provinsi').empty().append('<option value=""></option>'); 
             $.each(data, function(index, provinsi) {
-                // Di sini kita tetap menggunakan nama provinsi sebagai value untuk ditampilkan
-                $('#select-provinsi').append(new Option(provinsi.nama, provinsi.nama));
+                // Simpan ID provinsi di 'data-provinsi-id'
+                var option = new Option(provinsi.nama, provinsi.nama);
+                $(option).data('provinsi-id', provinsi.id); 
+                $('#select-provinsi').append(option);
             });
+            
+            // Set ulang nilai jika ada old value
+            var oldProvinsi = "{{ old('provinsi') }}";
+            if(oldProvinsi) {
+                $('#select-provinsi').val(oldProvinsi).trigger('change');
+            }
         });
 
         // Event listener saat provinsi berubah
         $('#select-provinsi').on('change', function() {
             var namaProvinsi = $(this).val();
+            // Ambil data 'data-provinsi-id' dari opsi yang dipilih
+            var provinsiId = $(this).find(':selected').data('provinsi-id');
+
+            // Simpan ID provinsi ke input tersembunyi
+            $('#provinsi-id').val(provinsiId);
+            
             $('#select-kabupaten').empty().append('<option value="">Memuat...</option>').trigger('change');
 
-            $.getJSON('https://ibnux.github.io/data-indonesia/provinsi.json', function(data) {
-                // Cari provinsi yang dipilih untuk mendapatkan ID-nya
-                var provinsiDipilih = data.find(p => p.nama === namaProvinsi);
-
-                if (provinsiDipilih) {
-                    // FIX: Simpan ID provinsi ke input tersembunyi
-                    $('#provinsi-id').val(provinsiDipilih.id);
-
-                    $.getJSON('https://ibnux.github.io/data-indonesia/kabupaten/' + provinsiDipilih.id + '.json', function(kabupatenData) {
-                        $('#select-kabupaten').empty().append('<option value=""></option>'); 
-                        $.each(kabupatenData, function(index, kabupaten) {
-                            $('#select-kabupaten').append(new Option(kabupaten.nama, kabupaten.nama));
-                        });
+            if (provinsiId) {
+                $.getJSON(`https://ibnux.github.io/data-indonesia/kabupaten/${provinsiId}.json`, function(kabupatenData) {
+                    $('#select-kabupaten').empty().append('<option value=""></option>'); 
+                    $.each(kabupatenData, function(index, kabupaten) {
+                        $('#select-kabupaten').append(new Option(kabupaten.nama, kabupaten.nama));
                     });
-                }
-            });
+                    
+                    // Set ulang nilai jika ada old value
+                    var oldKabupaten = "{{ old('kabupaten_kota') }}";
+                    if(oldKabupaten) {
+                        $('#select-kabupaten').val(oldKabupaten).trigger('change');
+                    }
+                });
+            } else {
+                 $('#select-kabupaten').empty().append('<option value="">-- Pilih Provinsi Dulu --</option>').trigger('change');
+            }
         }); 
     });
 </script>
 @endpush
-

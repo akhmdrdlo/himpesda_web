@@ -3,6 +3,21 @@
 @section('content')
     <section class="w-full bg-[var(--blue-dark)] py-20">
         <div class="max-w-7xl mx-auto px-6 text-center"><h1 class="text-4xl font-bold text-white">Arsip Berita & Kegiatan</h1></div>
+            {{-- Search Form --}}
+            <div class="max-w-xl mx-auto relative mt-5">
+                <form action="{{ route('berita.index') }}" method="GET" class="relative">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        value="{{ request('search') }}"
+                        placeholder="Cari judul berita atau topik..." 
+                        class="w-full pl-6 pr-14 py-4 rounded-full border-0 shadow-lg text-slate-700 focus:ring-2 focus:ring-blue-500 focus:outline-none text-sm"
+                    >
+                    <button type="submit" class="absolute right-2 top-2 bg-blue-600 text-white p-2.5 rounded-full hover:bg-blue-700 transition shadow-md">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+            </div>
     </section>
     <section class="max-w-7xl mx-auto px-6 py-16">
         <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">

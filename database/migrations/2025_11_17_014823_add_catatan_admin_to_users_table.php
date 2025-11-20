@@ -6,25 +6,18 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Mengubah ENUM untuk menambahkan 'bendahara'
-            $table->enum('level', ['admin', 'operator','operator_daerah', 'bendahara', 'bendahara_daerah', 'anggota'])
-                ->default('anggota')->change();
+            // Kolom untuk alasan penolakan data
+            $table->text('catatan_admin')->nullable()->after('activated_at');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            //
+            $table->dropColumn('catatan_admin');
         });
     }
 };

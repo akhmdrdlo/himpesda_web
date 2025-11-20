@@ -108,6 +108,27 @@
                     <input type="hidden" name="tipe_anggota" value="{{ $anggota->tipe_anggota }}">
                 @endif
             </div>
+            {{-- Dropdown Level / Role Pengguna (Hanya Admin & Operator Pusat) --}}
+            <div class="md:col-span-2">
+                <label for="level" class="text-xs font-bold">Level Akses (Role)</label>
+                
+                @if(in_array(auth()->user()->level, ['admin', 'operator']))
+                    <select name="level" class="focus:shadow-primary-outline text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white p-2">
+                        {{-- List semua role yang tersedia di sistem --}}
+                        <option value="anggota" {{ old('level', $anggota->level) == 'anggota' ? 'selected' : '' }}>Anggota</option>
+                        <option value="operator" {{ old('level', $anggota->level) == 'operator' ? 'selected' : '' }}>Operator (Pusat)</option>
+                        <option value="operator_daerah" {{ old('level', $anggota->level) == 'operator_daerah' ? 'selected' : '' }}>Operator Daerah</option>
+                        <option value="bendahara" {{ old('level', $anggota->level) == 'bendahara' ? 'selected' : '' }}>Bendahara (Pusat)</option>
+                        <option value="bendahara_daerah" {{ old('level', $anggota->level) == 'bendahara_daerah' ? 'selected' : '' }}>Bendahara Daerah</option>
+                    </select>
+                    <p class="text-xs text-gray-500 mt-1">Hanya Admin dan Operator Pusat yang dapat mengubah level akses.</p>
+                @else
+                    {{-- Jika user login BUKAN admin/operator, hanya tampilkan teks (Read-only) --}}
+                    <input type="text" value="{{ ucfirst(str_replace('_', ' ', $anggota->level)) }}" class="focus:shadow-primary-outline text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-gray-100 p-2" disabled readonly>
+                    {{-- Input hidden agar nilai level tetap ada saat submit (menghindari error validation jika ada) --}}
+                    <input type="hidden" name="level" value="{{ $anggota->level }}">
+                @endif
+            </div>
 
             <div class="md:col-span-2">
               <label class="text-xs font-bold">Ganti Pas Foto (Opsional)</label>

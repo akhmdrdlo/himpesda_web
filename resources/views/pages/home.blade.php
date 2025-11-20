@@ -41,7 +41,7 @@
         @endif
     </section>
 
-        {{-- Berita Terbaru Section --}}
+    {{-- Berita Terbaru Section --}}
     <section class="w-full bg-slate-50 py-20">
         <div class="max-w-7xl mx-auto px-6">
             <h2 class="text-3xl font-bold mb-10 text-center">Berita & Kegiatan Terbaru</h2>
@@ -101,6 +101,39 @@
                 <div class="bg-white rounded-lg shadow-lg p-8">
                     <h3 class="text-xl font-semibold text-gray-700">Anggota Daerah</h3>
                     <div x-ref="anggotaDaerah" data-target="{{ $jumlahAnggotaDaerah ?? 0 }}" class="mt-4 text-6xl font-bold text-yellow-600">0</div>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-5">
+                {{-- Card Chart 1: Gender --}}
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow">
+                    <h3 class="text-lg font-bold text-center mb-6 text-slate-700">Jenis Kelamin</h3>
+                    <div class="relative h-48">
+                        <canvas id="chartGender"></canvas>
+                    </div>
+                </div>
+                
+                {{-- Card Chart 2: Provinsi --}}
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow">
+                    <h3 class="text-lg font-bold text-center mb-6 text-slate-700">Sebaran Provinsi</h3>
+                    <div class="relative h-48">
+                        <canvas id="chartProvinsi"></canvas>
+                    </div>
+                </div>
+
+                {{-- Card Chart 3: Unit Kerja --}}
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow">
+                    <h3 class="text-lg font-bold text-center mb-6 text-slate-700">Unit Kerja</h3>
+                    <div class="relative h-48">
+                        <canvas id="chartUnit"></canvas>
+                    </div>
+                </div>
+
+                {{-- Card Chart 4: Jabatan --}}
+                <div class="bg-white p-6 rounded-2xl shadow-lg border border-slate-100 hover:shadow-xl transition-shadow">
+                    <h3 class="text-lg font-bold text-center mb-6 text-slate-700">Jabatan Fungsional</h3>
+                    <div class="relative h-48">
+                        <canvas id="chartJabatan"></canvas>
+                    </div>
                 </div>
             </div>
         </div>
@@ -184,6 +217,10 @@
 @push('scripts')
     {{-- Alpine.js untuk Animasi Statistik --}}
     <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.x.x/dist/alpine.min.js" defer></script>
+
+    <script>
+
+    </script>
     <script>
         // Logika Animasi Statistik
         function statisticsSection() {
@@ -254,6 +291,90 @@
             setInterval(() => {
                 document.getElementById('nextBtn').click();
             }, 5000);
+        });
+
+                // Konfigurasi Umum Chart
+        const commonOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom',
+                    labels: {
+                        usePointStyle: true,
+                        padding: 20,
+                        font: { family: "'Inter', sans-serif", size: 11 }
+                    }
+                }
+            },
+            cutout: '65%', // Membuat efek Donut yang lebih modern
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            }
+        };
+
+        // Palette Warna Modern
+        const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6366F1', '#EC4899'];
+
+        // 1. Chart Gender
+        const ctxGender = document.getElementById('chartGender').getContext('2d');
+        new Chart(ctxGender, {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode($genderData->keys()) !!},
+                datasets: [{
+                    data: {!! json_encode($genderData->values()) !!},
+                    backgroundColor: ['#3B82F6', '#EC4899'], // Biru & Pink
+                    borderWidth: 0
+                }]
+            },
+            options: commonOptions
+        });
+
+        // 2. Chart Provinsi
+        const ctxProv = document.getElementById('chartProvinsi').getContext('2d');
+        new Chart(ctxProv, {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode($provinsiData['labels']) !!},
+                datasets: [{
+                    data: {!! json_encode($provinsiData['values']) !!},
+                    backgroundColor: colors,
+                    borderWidth: 0
+                }]
+            },
+            options: commonOptions
+        });
+
+        // 3. Chart Unit Kerja
+        const ctxUnit = document.getElementById('chartUnit').getContext('2d');
+        new Chart(ctxUnit, {
+            type: 'pie', // Variasi pakai Pie
+            data: {
+                labels: {!! json_encode($unitData['labels']) !!},
+                datasets: [{
+                    data: {!! json_encode($unitData['values']) !!},
+                    backgroundColor: colors,
+                    borderWidth: 0
+                }]
+            },
+            options: commonOptions
+        });
+
+        // 4. Chart Jabatan
+        const ctxJabatan = document.getElementById('chartJabatan').getContext('2d');
+        new Chart(ctxJabatan, {
+            type: 'doughnut',
+            data: {
+                labels: {!! json_encode($jabatanData['labels']) !!},
+                datasets: [{
+                    data: {!! json_encode($jabatanData['values']) !!},
+                    backgroundColor: colors,
+                    borderWidth: 0
+                }]
+            },
+            options: commonOptions
         });
     </script>
 @endpush

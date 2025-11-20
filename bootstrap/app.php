@@ -11,7 +11,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+        // --- TAMBAHKAN ALIAS ANDA DI SINI ---
+        $middleware->alias([
+            'isAdmin' => \App\Http\Middleware\IsAdmin::class,
+            // 'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class, // (Contoh jika Anda butuh yang lain)
+        ]);
+        // -------------------------------------
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

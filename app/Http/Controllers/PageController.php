@@ -7,7 +7,7 @@ use App\Models\Pendaftar;
 use App\Models\User;
 use App\Models\Document;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\DB;
 class PageController extends Controller
 {
     public function home()
@@ -29,6 +29,37 @@ class PageController extends Controller
         $jumlahAnggota = User::where('level', 'anggota')->count(); 
         $jumlahAnggotaPusat = User::where('tipe_anggota', 'pusat')->where('level', 'anggota')->count();
         $jumlahAnggotaDaerah = User::where('tipe_anggota', 'daerah')->where('level', 'anggota')->count();
+
+        // --- DATA STATISTIK UNTUK CHART ---
+        // 1. Jenis Kelamin
+        $genderData = User::select('jenis_kelamin', DB::raw('count(*) as total'))
+            ->whereNotNull('jenis_kelamin')
+            ->groupBy('jenis_kelamin')
+            ->pluck('total', 'jenis_kelamin');
+
+        // 2. Unit Kerja (Top 5 + Lainnya)
+        $unitRaw = User::select('unit_kerja', DB::raw('count(*) as total'))
+            ->whereNotNull('unit_kerja')
+            ->groupBy('unit_kerja')
+            ->orderByDesc('total')
+            ->get();
+        $unitData = $this->processChartData($unitRaw, 'unit_kerja');
+
+        // 3. Provinsi (Top 5 + Lainnya)
+        $provinsiRaw = User::select('provinsi', DB::raw('count(*) as total'))
+            ->whereNotNull('provinsi')
+            ->groupBy('provinsi')
+            ->orderByDesc('total')
+            ->get();
+        $provinsiData = $this->processChartData($provinsiRaw, 'provinsi');
+
+        // 4. Jabatan Fungsional
+        $jabatanRaw = User::select('jabatan_fungsional', DB::raw('count(*) as total'))
+            ->whereNotNull('jabatan_fungsional')
+            ->groupBy('jabatan_fungsional')
+            ->orderByDesc('total')
+            ->get();
+        $jabatanData = $this->processChartData($jabatanRaw, 'jabatan_fungsional');
         return view('pages.home', compact(
             'himpunan',
             'beritaTerbaru',
@@ -37,8 +68,28 @@ class PageController extends Controller
             'jumlahAnggotaDaerah',
             'youtubePost',
             'instagramPost',
-            'xPost'
+            'xPost',
+            'genderData',
+            'unitData',
+            'provinsiData',
+            'jabatanData'
         ));
+    }
+
+    // Helper untuk membatasi data chart agar tidak terlalu ramai
+    private function processChartData($collection, $keyName) {
+        $top = $collection->take(5);
+        $othersCount = $collection->slice(5)->sum('total');
+        
+        $labels = $top->pluck($keyName)->toArray();
+        $values = $top->pluck('total')->toArray();
+
+        if ($othersCount > 0) {
+            $labels[] = 'Lainnya';
+            $values[] = $othersCount;
+        }
+
+        return ['labels' => $labels, 'values' => $values];
     }
 
     // --- METHOD BARU UNTUK 3 HALAMAN DOKUMEN ---
@@ -70,12 +121,20 @@ class PageController extends Controller
         return view('pages.profil.dokumen-detail', compact('document'));
     }
 
-    public function berita()
+    // Update method berita untuk menangani SEARCH
+    public function berita(Request $request)
     {
-        $semuaBerita = Berita::latest()->paginate(9); // 9 berita per halaman
+        $query = Berita::latest();
+
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where('judul', 'like', "%{$search}%")
+                  ->orWhere('konten', 'like', "%{$search}%");
+        }
+
+        $semuaBerita = $query->paginate(9); 
         return view('pages.berita', compact('semuaBerita'));
     }
-
         /**
      * Menampilkan halaman detail untuk satu berita berdasarkan slug-nya.
      */

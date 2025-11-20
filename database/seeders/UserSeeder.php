@@ -34,6 +34,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@himpesda.org',
             'password' => Hash::make('password'),
             'level' => 'admin',
+            'status_pengajuan' => 'active', // Admin otomatis aktif
             'tipe_anggota' => 'pusat',
             'provinsi' => 'DKI Jakarta',
             'nomor_anggota' => 'ID-PUSAT-001',
@@ -44,10 +45,11 @@ class UserSeeder extends Seeder
         ]);
 
         User::create([
-            'nama_lengkap' => 'Operator Satu',
+            'nama_lengkap' => 'Operator Pusat', // Nama diubah untuk kejelasan
             'email' => 'operator@himpesda.org',
             'password' => Hash::make('password'),
-            'level' => 'operator',
+            'level' => 'operator', // Ini adalah operator pusat
+            'status_pengajuan' => 'active',
             'tipe_anggota' => 'pusat',
             'provinsi' => 'DKI Jakarta',
             'nomor_anggota' => 'ID-PUSAT-002',
@@ -62,6 +64,7 @@ class UserSeeder extends Seeder
             'email' => 'bendahara@himpesda.org',
             'password' => Hash::make('password'),
             'level' => 'bendahara',
+            'status_pengajuan' => 'active',
             'tipe_anggota' => 'pusat',
             'provinsi' => 'DKI Jakarta',
             'nomor_anggota' => 'ID-PUSAT-003',
@@ -69,6 +72,69 @@ class UserSeeder extends Seeder
             'jenis_kelamin' => 'Perempuan',
             'tanggal_lahir' => '1992-03-03',
             'asal_instansi' => 'Kementerian PUPR',
+        ]);
+
+        // === TAMBAHAN BARU: Operator Daerah ===
+        User::create([
+            'nama_lengkap' => 'Operator Daerah Jawa Barat',
+            'email' => 'operator.jabar@himpesda.org',
+            'password' => Hash::make('password'),
+            'level' => 'operator_daerah', // Level baru sesuai rencana
+            'status_pengajuan' => 'active',
+            'tipe_anggota' => 'daerah',
+            'provinsi' => 'Jawa Barat', // Provinsi yang akan difilter
+            'nomor_anggota' => 'ID-JABAR-001',
+            'nip' => '199304042018051004',
+            'jenis_kelamin' => 'Laki-laki',
+            'tanggal_lahir' => '1993-04-04',
+            'asal_instansi' => 'Dinas SDA Provinsi',
+        ]);
+
+        // === TAMBAHAN BARU: Operator Daerah ===
+        User::create([
+            'nama_lengkap' => 'Operator Daerah Jawa Timur',
+            'email' => 'operator.jatim@himpesda.org',
+            'password' => Hash::make('password'),
+            'level' => 'operator_daerah', // Level baru sesuai rencana
+            'status_pengajuan' => 'active',
+            'tipe_anggota' => 'daerah',
+            'provinsi' => 'Jawa Timur', // Provinsi yang akan difilter
+            'nomor_anggota' => 'ID-JATIM-001',
+            'nip' => '1288143663139812',
+            'jenis_kelamin' => 'Laki-laki',
+            'tanggal_lahir' => '1993-04-04',
+            'asal_instansi' => 'Dinas SDA Provinsi',
+        ]);
+
+        // === TAMBAHAN BARU: Bendahara Daerah ===
+        User::create([
+            'nama_lengkap' => 'Bendahara Daerah Jawa Barat',
+            'email' => 'bendahara.jabar@himpesda.org',
+            'password' => Hash::make('password'),
+            'level' => 'bendahara_daerah',
+            'status_pengajuan' => 'active',
+            'tipe_anggota' => 'daerah',
+            'provinsi' => 'Jawa Barat',
+            'nomor_anggota' => 'ID-JABAR-002',
+            'nip' => '199405052019061005',
+            'jenis_kelamin' => 'Perempuan',
+            'tanggal_lahir' => '1994-05-05',
+            'asal_instansi' => 'Dinas SDA Provinsi',
+        ]);
+
+        User::create([
+            'nama_lengkap' => 'Bendahara Daerah Jawa Timur',
+            'email' => 'bendahara.jatim@himpesda.org',
+            'password' => Hash::make('password'),
+            'level' => 'bendahara_daerah',
+            'status_pengajuan' => 'active',
+            'tipe_anggota' => 'daerah',
+            'provinsi' => 'Jawa Timur',
+            'nomor_anggota' => 'ID-JATIM-002',
+            'nip' => '199506062020071006',
+            'jenis_kelamin' => 'Laki-laki',
+            'tanggal_lahir' => '1995-06-06',
+            'asal_instansi' => 'Dinas SDA Provinsi',
         ]);
 
         // 2. Buat 20 Anggota Pusat (Jajaran Direksi statis)
@@ -84,11 +150,13 @@ class UserSeeder extends Seeder
                 'nama_lengkap' => $nama,
                 'email' => strtolower(str_replace(['. ', ', ', '.'], '', Str::limit($nama, 15))) . '@himpesda.pusat.org',
                 'level' => 'anggota',
+                'status_pengajuan' => 'active', // Anggota seeder otomatis aktif
                 'tipe_anggota' => 'pusat',
                 'provinsi' => 'DKI Jakarta',
-                'nomor_anggota' => 'ID-PUSAT-' . str_pad($index + 4, 3, '0', STR_PAD_LEFT), // Melanjutkan nomor urut
+                'nomor_anggota' => 'ID-PUSAT-' . str_pad($index + 5, 3, '0', STR_PAD_LEFT), // Melanjutkan nomor urut
                 'asal_instansi' => $asalInstansi[array_rand($asalInstansi)],
                 'jabatan_fungsional' => $jabatan[array_rand($jabatan)],
+                'activated_at' => now(),
             ]);
         }
 
@@ -97,13 +165,14 @@ class UserSeeder extends Seeder
             $provinsi = $provinsiIndonesia[array_rand($provinsiIndonesia)];
             User::factory()->create([
                 'level' => 'anggota',
+                'status_pengajuan' => 'active', // Anggota seeder otomatis aktif
                 'tipe_anggota' => 'daerah',
                 'provinsi' => $provinsi,
                 'nomor_anggota' => 'ID-DAERAH-' . str_pad($i + 1, 3, '0', STR_PAD_LEFT),
                 'asal_instansi' => $asalInstansi[array_rand($asalInstansi)],
                 'jabatan_fungsional' => $jabatan[array_rand($jabatan)],
+                'activated_at' => now(),
             ]);
         }
     }
 }
-
