@@ -66,6 +66,27 @@
                         </div>
                     </div>
                 </div>
+                <hr class="my-6 border-gray-200">
+                <h6 class="text-lg font-bold text-blue-600 mb-4">Informasi Rekening Pembayaran (Iuran)</h6>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700">Nama Bank</label>
+                        <input type="text" name="nama_bank" value="{{ old('nama_bank', $organisasi->nama_bank) }}" placeholder="Contoh: Bank BCA" class="w-full rounded border-gray-300 p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700">Nomor Rekening</label>
+                        <input type="text" name="no_rekening" value="{{ old('no_rekening', $organisasi->no_rekening) }}" placeholder="Contoh: 1234567890" class="w-full rounded border-gray-300 p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700">Atas Nama (Pemilik Rekening)</label>
+                        <input type="text" name="nama_pemilik_rekening" value="{{ old('nama_pemilik_rekening', $organisasi->nama_pemilik_rekening) }}" placeholder="Contoh: Bendahara HIMPESDA" class="w-full rounded border-gray-300 p-2">
+                    </div>
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700">Nominal Iuran (Rp)</label>
+                        <input type="number" name="nominal_iuran" value="{{ old('nominal_iuran', $organisasi->nominal_iuran) }}" class="w-full rounded border-gray-300 p-2">
+                    </div>
+                </div>
 
                 <div class="flex justify-end mt-6">
                     <a href="{{ route('admin.dashboard') }}" class="px-8 py-2 mr-2 font-bold text-gray-700 bg-gray-200 rounded-lg text-xs">Batal</a>

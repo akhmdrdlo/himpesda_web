@@ -145,9 +145,9 @@
                     </div>
 
                     {{-- Action Buttons --}}
-                    @if(auth()->user()->level == 'admin')
+                    @if(in_array(auth()->user()->level, ['admin', 'bendahara']))
                         <div class="px-6 py-4 border-t border-gray-200 bg-gray-50 rounded-b-2xl flex gap-3 justify-end">
-                            <a href="{{ route('admin.documents.index') }}" class="inline-flex items-center px-4 py-2 bg-slate-600 hover:bg-slate-700 hover:text-white font-semibold text-xs rounded-lg transition-all duration-200 shadow-sm hover:shadow-md active:scale-95">
+                            <a href="{{ route('admin.documents.index') }}" class="inline-flex items-center px-4 py-2 hover:bg-slate-700 hover:text-white font-semibold text-xs rounded-lg transition-all duration-200 shadow-sm hover:shadow-md active:scale-95">
                                 <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
                                 Kelola Dokumen
                             </a>
@@ -209,13 +209,36 @@
                             <div class="p-6 border-l-4 border-blue-500 bg-blue-50">
                                 <h4 class="font-bold text-lg">Status: Menunggu Pembayaran</h4>
                                 <p class="mt-2">Pendaftaran Anda telah disetujui. Silakan lakukan pembayaran iuran keanggotaan dan unggah bukti pembayaran di bawah ini untuk mengaktifkan akun Anda.</p>
-                                
-                                <div class="mt-4 p-4 bg-gray-100 rounded-md">
-                                    <p class="font-semibold">Silakan transfer ke rekening:</p>
-                                    <p>Bank ABC - 1234567890 a.n. Bendahara HIMPESDA</p>
-                                    <p>Jumlah: Rp 100.000,-</p>
-                                </div>
+                                                                
+                                {{-- Ambil data organisasi (Pastikan dikirim dari controller atau pakai query langsung di view jika terpaksa) --}}
+                                @php
+                                    $infoBayar = \App\Models\Himpunan::first();
+                                @endphp
 
+                                <div class="mt-4 p-5 bg-blue-50 border border-blue-200 rounded-lg">
+                                    <h5 class="font-bold text-blue-800 mb-2"><i class="fas fa-university mr-2"></i>Instruksi Pembayaran</h5>
+                                    <p class="text-sm text-blue-900 mb-4">Silakan transfer biaya pendaftaran/iuran ke rekening resmi berikut:</p>
+                                    
+                                    <div class="bg-white p-4 rounded border border-blue-100 shadow-sm">
+                                        <p class="text-xs text-gray-500 uppercase font-bold">Bank Tujuan</p>
+                                        <p class="text-lg font-bold text-slate-800">{{ $infoBayar->nama_bank ?? 'Bank Belum Diatur' }}</p>
+                                        
+                                        <div class="my-2 border-t border-dashed border-gray-200"></div>
+
+                                        <p class="text-xs text-gray-500 uppercase font-bold">Nomor Rekening</p>
+                                        <p class="text-xl font-mono font-black text-slate-800 tracking-wider copy-text cursor-pointer" onclick="navigator.clipboard.writeText('{{ $infoBayar->no_rekening }}'); alert('No Rekening Disalin!')">
+                                            {{ $infoBayar->no_rekening ?? '-' }} 
+                                            <i class="far fa-copy text-xs text-blue-500 ml-2"></i>
+                                        </p>
+                                        
+                                        <p class="text-sm text-gray-600 mt-1">a.n. {{ $infoBayar->nama_pemilik_rekening ?? '-' }}</p>
+
+                                        <div class="mt-4 p-3 bg-yellow-50 rounded border border-yellow-200">
+                                            <p class="text-xs text-yellow-700 font-bold uppercase">Total Nominal Transfer</p>
+                                            <p class="text-xl font-bold text-yellow-800">Rp {{ number_format($infoBayar->nominal_iuran ?? 0, 0, ',', '.') }}</p>
+                                        </div>
+                                    </div>
+                                </div>
                                 <form action="{{ route('anggota.pembayaran.store') }}" method="POST" enctype="multipart/form-data" class="mt-6">
                                     @csrf
                                     <div>

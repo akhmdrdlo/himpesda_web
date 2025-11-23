@@ -18,5 +18,9 @@ class Himpunan extends Model
         'nama_ketua',
         'foto_ketua',
         'gambar_struktur_organisasi',
+        'nama_bank',
+        'no_rekening',
+        'nama_pemilik_rekening',
+        'nominal_iuran',
     ];
 }

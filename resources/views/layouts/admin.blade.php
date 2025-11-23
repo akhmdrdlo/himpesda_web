@@ -33,7 +33,7 @@
               $bgClass = $isDaerah ? 'from-blue-600 to-cyan-400' : 'from-slate-700 to-slate-900';
           @endphp
 
-          <div class="mx-4 mt-2 p-3 rounded-xl bg-gradient-to-tl {{ $bgClass }} shadow-md text-center ">
+          <div class="mx-4 mt-2 p-3 rounded-xl {{ $bgClass }} shadow-md text-center ">
               <p class="text-[10px] opacity-80 uppercase tracking-wider mb-1">Area Kerja Aktif</p>
               <h6 class=" font-bold text-sm mb-0 leading-tight">
                   <i class="fas fa-map-marker-alt mr-1"></i> {{ $wilayahLabel }}
@@ -199,14 +199,72 @@
       var logoutBtn = document.getElementById('logout-btn');
       var logoutModal = document.getElementById('logout-modal');
       var logoutCancel = document.getElementById('logout-cancel');
+      var dialog = logoutModal ? logoutModal.querySelector('.bg-white') : null;
+
+      // animation durations (ms)
+      var overlayDuration = 200;
+      var contentDuration = 220;
 
       function showModal() {
+        if (!logoutModal) return;
+
+        // Make visible for measurement and animation
         logoutModal.classList.remove('hidden');
-        logoutModal.setAttribute('aria-hidden','false');
+        logoutModal.setAttribute('aria-hidden', 'false');
+
+        // Prepare starting styles
+        // include background-color in transition so we can darken the overlay smoothly
+        logoutModal.style.transition = `opacity ${overlayDuration}ms ease, background-color ${overlayDuration}ms ease`;
+        // start from transparent overlay + lighter bg to animate in
+        logoutModal.style.opacity = '0';
+        logoutModal.style.backgroundColor = 'rgba(0,0,0,0.4)';
+
+        if (dialog) {
+        dialog.style.transition = `transform ${contentDuration}ms cubic-bezier(.2,.8,.2,1), opacity ${contentDuration}ms ease`;
+        dialog.style.transform = 'scale(0.95)';
+        dialog.style.opacity = '0';
+        }
+
+        // Force layout then animate to final state
+        requestAnimationFrame(function() {
+        // make the overlay darker to focus on modal
+        logoutModal.style.opacity = '1';
+        logoutModal.style.backgroundColor = 'rgba(0,0,0,0.6)';
+
+        if (dialog) {
+          dialog.style.transform = 'scale(1)';
+          dialog.style.opacity = '1';
+        }
+        });
       }
+
       function hideModal() {
+        if (!logoutModal) return;
+
+        // Animate to hidden state: fade out and return overlay to original lighter color
+        logoutModal.style.opacity = '0';
+        logoutModal.style.backgroundColor = 'rgba(0,0,0,0.4)';
+        if (dialog) {
+        dialog.style.transform = 'scale(0.95)';
+        dialog.style.opacity = '0';
+        }
+
+        // After animation ends, fully hide and cleanup inline styles
+        var total = Math.max(overlayDuration, contentDuration) + 50;
+        setTimeout(function() {
         logoutModal.classList.add('hidden');
-        logoutModal.setAttribute('aria-hidden','true');
+        logoutModal.setAttribute('aria-hidden', 'true');
+
+        // cleanup
+        logoutModal.style.transition = '';
+        logoutModal.style.opacity = '';
+        logoutModal.style.backgroundColor = '';
+        if (dialog) {
+          dialog.style.transition = '';
+          dialog.style.transform = '';
+          dialog.style.opacity = '';
+        }
+        }, total);
       }
 
       if (logoutBtn) {
@@ -215,17 +273,19 @@
         showModal();
         });
       }
+
       if (logoutCancel) {
         logoutCancel.addEventListener('click', function(){
         hideModal();
         });
       }
-      // Klik di area overlay akan menutup modal
+
       if (logoutModal) {
+        // Click on overlay closes modal
         logoutModal.addEventListener('click', function(e){
         if (e.target === logoutModal) hideModal();
         });
-        // ESC untuk menutup
+        // ESC to close
         document.addEventListener('keydown', function(e){
         if (e.key === 'Escape' && !logoutModal.classList.contains('hidden')) hideModal();
         });
@@ -240,16 +300,16 @@
           var closeBtn = document.getElementById('sidenav-close-btn');
 
           if (hamburgerBtn) {
-            hamburgerBtn.addEventListener('click', function(e) {
-              e.preventDefault(); 
-              sidenav.classList.toggle('-translate-x-full');
-            });
+        hamburgerBtn.addEventListener('click', function(e) {
+          e.preventDefault(); 
+          sidenav.classList.toggle('-translate-x-full');
+        });
           }
 
           if (closeBtn) {
-              closeBtn.addEventListener('click', function() {
-                  sidenav.classList.add('-translate-x-full');
-              });
+          closeBtn.addEventListener('click', function() {
+          sidenav.classList.add('-translate-x-full');
+          });
           }
 
           // Logika baru untuk dropdown menu yang sudah diperbaiki
@@ -257,35 +317,48 @@
           var userMenu = document.getElementById('user-menu');
 
           if (userMenuButton && userMenu) {
-              userMenuButton.addEventListener('click', function(event) {
-                  event.stopPropagation();
+          userMenuButton.addEventListener('click', function(event) {
+          event.stopPropagation();
 
-                  if (userMenu.classList.contains('hidden')) {
-                      // Show logic
-                      userMenu.style.visibility = 'hidden'; // Siapkan untuk pengukuran
-                      userMenu.classList.remove('hidden');
+          if (userMenu.classList.contains('hidden')) {
+              // Show logic with animation
+              userMenu.style.visibility = 'hidden'; // Siapkan untuk pengukuran
+              userMenu.classList.remove('hidden');
+              userMenu.classList.add('fade-in-slide-down');
 
-                      const menuWidth = userMenu.offsetWidth;
-                      const rect = userMenuButton.getBoundingClientRect();
+              const menuWidth = userMenu.offsetWidth;
+              const rect = userMenuButton.getBoundingClientRect();
 
-                      userMenu.style.top = `${rect.bottom + window.scrollY + 4}px`;
-                      userMenu.style.left = `${rect.right + window.scrollX - menuWidth}px`;
+              userMenu.style.top = `${rect.bottom + window.scrollY + 4}px`;
+              userMenu.style.left = `${rect.right + window.scrollX - menuWidth}px`;
 
-                      userMenu.style.visibility = 'visible'; // Tampilkan di posisi yang benar
-                  } else {
-                      // Hide logic
-                      userMenu.classList.add('hidden');
-                      userMenu.style.visibility = ''; // Reset inline style
-                  }
-              });
+              userMenu.style.visibility = 'visible'; // Tampilkan di posisi yang benar
+          } else {
+              // Hide logic with animation
+              userMenu.classList.remove('fade-in-slide-down');
+              userMenu.classList.add('fade-out-slide-up');
 
-              // Menutup dropdown jika user mengklik di luar area
-              window.addEventListener('click', function(e) {
-                  if (!userMenu.classList.contains('hidden') && !userMenu.contains(e.target) && !userMenuButton.contains(e.target)) {
-                      userMenu.classList.add('hidden');
-                      userMenu.style.visibility = ''; // Reset juga di sini
-                  }
-              });
+              setTimeout(function() {
+              userMenu.classList.add('hidden');
+              userMenu.style.visibility = ''; // Reset inline style
+              userMenu.classList.remove('fade-out-slide-up');
+              }, 300); // Match this duration with your CSS transition duration
+          }
+          });
+
+          // Menutup dropdown jika user mengklik di luar area
+          window.addEventListener('click', function(e) {
+          if (!userMenu.classList.contains('hidden') && !userMenu.contains(e.target) && !userMenuButton.contains(e.target)) {
+              userMenu.classList.remove('fade-in-slide-down');
+              userMenu.classList.add('fade-out-slide-up');
+
+              setTimeout(function() {
+              userMenu.classList.add('hidden');
+              userMenu.style.visibility = ''; // Reset juga di sini
+              userMenu.classList.remove('fade-out-slide-up');
+              }, 300); // Match this duration with your CSS transition duration
+          }
+          });
           }
       });
   </script>

@@ -14,6 +14,10 @@ class HimpunanController extends Controller
      */
     public function edit()
     {
+        // IZINKAN BENDAHARA AKSES
+        if (!in_array(auth()->user()->level, ['admin', 'bendahara'])) {
+            abort(403);
+        }
         // Mengambil data pertama, atau membuat baris baru jika tabel kosong.
         // Ini mencegah error saat aplikasi baru pertama kali dijalankan.
         $organisasi = Himpunan::firstOrCreate([]);
@@ -35,6 +39,10 @@ class HimpunanController extends Controller
             'nama_ketua' => 'required|string|max:255',
             'foto_ketua' => 'nullable|image|max:2048',
             'gambar_struktur_organisasi' => 'nullable|image|max:2048', // Validasi untuk gambar struktur
+            'nama_bank' => 'nullable|string',
+            'no_rekening' => 'nullable|string',
+            'nama_pemilik_rekening' => 'nullable|string',
+            'nominal_iuran' => 'required|numeric',
         ]);
         
         // Ambil semua data teks dari request

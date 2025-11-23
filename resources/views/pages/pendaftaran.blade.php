@@ -140,13 +140,13 @@
             <h3 class="text-lg font-semibold text-gray-800 border-b pb-2 mb-6">Pengaturan Akun</h3>
              <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                    <label for="password" class="block mb-2 text-sm font-semibold">Password</label>
+                    <label for="password" class="block mb-2 text-sm font-semibold">Password (min: 8 karakter)</label>
                     <input type="password" id="password" name="password"
                            class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200"
                            required>
                 </div>
                 <div>
-                    <label for="password_confirmation" class="block mb-2 text-sm font-semibold">Konfirmasi Password</label>
+                    <label for="password_confirmation" class="block mb-2 text-sm font-semibold">Konfirmasi Password (min: 8 karakter)</label>
                     <input type="password" id="password_confirmation" name="password_confirmation"
                            class="w-full border-2 border-gray-300 focus:border-blue-600 focus:ring-2 focus:ring-blue-100 rounded-lg text-sm transition-all duration-200"
                            required>

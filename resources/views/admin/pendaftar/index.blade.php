@@ -42,8 +42,7 @@
                             <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                                 <tr>
                                     <th scope="col" class="px-6 py-3">Nama Pendaftar</th>
-                                    <th scope="col" class="px-6 py-3">Provinsi</th>
-                                    <th scope="col" class="px-6 py-3">Asal Instansi</th>
+                                    <th scope="col" class="px-6 py-3">Asal Instansi/Provinsi</th>
                                     <th scope="col" class="px-6 py-3">Tanggal Daftar</th>
                                     <th scope="col" class="px-6 py-3">Pas Foto</th>
                                     <th scope="col" class="px-6 py-3 text-center">Aksi</th>
@@ -56,8 +55,10 @@
                                         {{ $user->nama_lengkap }}
                                         <span class="block text-xs font-normal text-gray-500">{{ $user->email }}</span>
                                     </td>
-                                    <td class="px-6 py-4">{{ $user->provinsi }}</td>
-                                    <td class="px-6 py-4">{{ $user->asal_instansi }}</td>
+                                    <td class="px-6 py-4 font-semibold text-gray-900">
+                                        <span class="block text-xs font-normal text-gray-500">{{ $user->asal_instansi }}</span>
+                                        {{ $user->provinsi }}
+                                    </td>
                                     <td class="px-6 py-4">{{ $user->created_at->translatedFormat('d F Y') }}</td>
                                     <td class="px-6 py-4">
                                         <a href="{{ asset('storage/' . $user->pas_foto) }}" target="_blank" class="text-blue-600 hover:underline font-medium">
@@ -65,6 +66,7 @@
                                         </a>
                                     </td>
                                     <td class="px-6 py-4 text-center whitespace-nowrap">
+                                        <a href="{{ route('admin.anggota.show', $user->id) }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer hover:shadow-xs active:opacity-85">Detail</a>
                                         {{-- Tombol Setujui Data --}}
                                         <form action="{{ route('admin.verifikasi.approveData', $user->id) }}" method="POST" class="inline-block" onsubmit="return confirm('Yakin ingin menyetujui data pendaftar ini?');">
                                             @csrf
@@ -126,6 +128,7 @@
                                     <td class="px-6 py-4">{{ $item->user->email }}</td>
                                     <td class="px-6 py-4">{{ $item->created_at->translatedFormat('d F Y, H:i') }}</td>
                                     <td class="px-6 py-4">
+                                        <a href="{{ route('admin.anggota.show', $user->id) }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer hover:shadow-xs active:opacity-85">Detail</a>
                                         <a href="{{ asset('storage/' . $item->file_bukti) }}" target="_blank" class="text-blue-600 hover:underline font-medium">
                                             Lihat Bukti
                                         </a>

@@ -72,6 +72,7 @@
 
                 {{-- Tombol Aksi --}}
                 <div class="w-full max-w-full px-3 mt-4 lg:mt-0 lg:w-auto lg:flex-none ml-auto self-center">
+                    @if(in_array(auth()->user()->status_pengajuan, ['aktif']))
                     <div class="flex items-center justify-center lg:justify-end space-x-2 flex-wrap gap-y-2">
                         <a href="{{ route('admin.anggota.cetak-kartu', $anggota->id) }}" target="_blank" class="inline-flex items-center px-4 py-2 font-bold text-white bg-gradient-to-tl from-blue-500 to-violet-500 rounded-lg shadow-md text-xs hover:shadow-lg hover:-translate-y-px active:opacity-85">
                             <i class="fas fa-print mr-2"></i> Cetak Kartu
@@ -90,6 +91,10 @@
                             </form>
                         @endif
                     </div>
+                    @endif
+                    <span class="px-3 py-1 rounded-md text-xs font-bold border bg-red-100 text-red-800 border-red-200' uppercase tracking-wide">
+                        Anggota Belum Diaktifkan
+                    </span>
                 </div>
             </div>
         </div>
