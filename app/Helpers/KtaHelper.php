@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Helpers;
+use App\Models\User; // <-- Pastikan Import Model User
 
 class KtaHelper
 {
@@ -54,16 +55,38 @@ class KtaHelper
      */
     public static function getCustomCode($namaProvinsi)
     {
-        if (empty($namaProvinsi)) {
-            return self::PROVINCE_CODE_MAP['PUSAT'];
+        if (empty($namaProvinsi)) return self::PROVINCE_CODE_MAP['PUSAT'];
+        $nama = strtoupper(trim(str_replace('PROVINSI ', '', $namaProvinsi)));
+        return self::PROVINCE_CODE_MAP[$nama] ?? self::PROVINCE_CODE_MAP['PUSAT'];
+    }
+
+    /**
+     * GENERATE NEXT KTA (LOGIKA BARU PER WILAYAH)
+     * Mencari nomor terakhir spesifik untuk kode provinsi tersebut.
+     */
+    public static function generateNextKta($kodeProvinsi)
+    {
+        // 1. Cari user terakhir yang punya kode provinsi_id SAMA dengan yang diminta
+        //    dan nomor_anggotanya tidak kosong.
+        $lastUser = User::where('provinsi_id', $kodeProvinsi)
+                        ->whereNotNull('nomor_anggota')
+                        ->orderBy('nomor_anggota', 'desc') // Urutkan dari yang terbesar (misal 120005)
+                        ->first();
+
+        $nextSequence = 1; // Default urutan awal jika belum ada data
+
+        if ($lastUser) {
+            // 2. Ambil 4 digit terakhir dari KTA terakhir
+            // Misal: KTA "120005" -> diambil "0005"
+            // Kita gunakan substr negatif (-4) untuk ambil 4 karakter dari belakang
+            $lastSequenceStr = substr($lastUser->nomor_anggota, -4);
+            
+            // 3. Ubah jadi integer dan tambah 1
+            $nextSequence = intval($lastSequenceStr) + 1;
         }
-        
-        // Bersihkan input (Hapus 'PROVINSI', Hapus Spasi, Uppercase)
-        // Contoh: "Provinsi Jawa Barat" -> "JAWABARAT" (jika key di atas tanpa spasi)
-        // TAPI karena key di atas pakai spasi, kita cukup trim & upper
-        $nama = strtoupper(trim(str_replace('PROVINSI', '', $namaProvinsi)));
-        
-        // Cek array, jika tidak ada kembalikan '00'
-        return self::PROVINCE_CODE_MAP[$nama] ?? '00';
+
+        // 4. Gabungkan Kode Provinsi + Urutan Baru (dipadding nol)
+        // Misal: '12' + '0006' = '120006'
+        return $kodeProvinsi . str_pad($nextSequence, 4, '0', STR_PAD_LEFT);
     }
 }

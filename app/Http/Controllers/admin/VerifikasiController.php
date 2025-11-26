@@ -155,12 +155,12 @@ class VerifikasiController extends Controller
 
         $user = $pembayaran->user;
 
-        // 1. PANGGIL HELPER UNTUK DAPAT KODE (Contoh: '12' untuk Jabar)
+        // 1. Ambil Kode Provinsi Kustom (01, 02, dst)
         $kodeProvinsi = KtaHelper::getCustomCode($user->provinsi);
-        
-        // 2. GENERATE NOMOR
-        $nomorUrut = str_pad($user->id, 4, '0', STR_PAD_LEFT); 
-        $nomorKTA = $kodeProvinsi . $nomorUrut;
+
+        // 2. GENERATE KTA (PAKAI LOGIKA BARU)
+        // Fungsi ini otomatis ngecek DB: "Ada berapa orang di Jabar? 5? Oke ini jadi ke-6"
+        $nomorKTA = KtaHelper::generateNextKta($kodeProvinsi);
 
         $user->update([
             'status_pengajuan' => 'active',

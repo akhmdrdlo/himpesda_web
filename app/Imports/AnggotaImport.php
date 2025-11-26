@@ -56,13 +56,19 @@ class AnggotaImport implements ToModel, WithHeadingRow
             $tipeAnggota  = $namaProvinsi ? 'daerah' : 'pusat';
         }
 
-        // --- 2. AMBIL KODE DARI HELPER (OTAKNYA SAMA) ---
+        // ==========================================
+        // GENERATE KTA (PER UBAHAN REQUEST)
+        // ==========================================
+        
+        // 1. Dapat Kode (misal: '12')
         $kodeProvinsi = KtaHelper::getCustomCode($namaProvinsi);
         
-        // --- 3. GENERATE KTA ---
-        $this->latestId++; 
-        $nomorKTA = $kodeProvinsi . str_pad($this->latestId, 4, '0', STR_PAD_LEFT);
+        // 2. Generate Nomor Urut Spesifik Daerah
+        // Fungsi ini query ke DB per baris data. 
+        // Aman, karena Maatwebsite menyimpan data row-by-row.
+        $nomorKTA = KtaHelper::generateNextKta($kodeProvinsi);
 
+        // Cek email
         if (User::where('email', $row['email'])->exists()) return null;
 
         // FIX: Tambahkan pengecekan apakah data tanggal lahir adalah numerik
@@ -118,6 +124,7 @@ class AnggotaImport implements ToModel, WithHeadingRow
             // Data Wilayah
             'provinsi'       => $namaProvinsi, // Nama tetap disimpan (untuk API UI)
             'provinsi_id'    => $kodeProvinsi, // ID disesuaikan dengan kode gambar
+            'kabupaten_kota' => $row['kabupaten'] ?? $row['kota'] ?? null,
             'nomor_anggota'  => $nomorKTA,     // KTA disesuaikan dengan kode gambar        
             'tipe_anggota'   => $tipeAnggota,
             

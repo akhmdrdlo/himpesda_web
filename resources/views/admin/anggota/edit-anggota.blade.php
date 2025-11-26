@@ -129,6 +129,13 @@
                     <input type="hidden" name="level" value="{{ $anggota->level }}">
                 @endif
             </div>
+            {{-- TAmbahan untuk mengedit password anggota (khusus level admin dan operator, serta operator daerah saja --}}
+            @if(in_array(auth()->user()->level, ['admin', 'operator', 'operator_daerah']))
+            <div class="md:col-span-2">
+                <label for="password" class="text-xs font-bold">Ganti Password (Opsional)</label>
+                <input type="password" name="password" id="password" class="focus:shadow-primary-outline text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white p-2" placeholder="Masukkan password baru jika ingin mengganti">
+            </div>
+            @endif
 
             <div class="md:col-span-2">
               <label class="text-xs font-bold">Ganti Pas Foto (Opsional)</label>

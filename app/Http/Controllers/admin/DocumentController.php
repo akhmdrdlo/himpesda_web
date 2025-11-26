@@ -39,7 +39,7 @@ class DocumentController extends Controller
         $request->validate([
             'description' => 'nullable|string|max:1000',
             'source_type' => ['required', Rule::in(['upload', 'link'])],
-            'document_file' => 'nullable|required_if:source_type,upload|file|mimes:pdf', // Wajib jika 'upload'
+            'document_file' => 'nullable|required_if:source_type,upload|file|mimes:pdf|max:10240',
             'external_link' => 'nullable|required_if:source_type,link|url', // Wajib jika 'link'
         ]);
 
