@@ -78,8 +78,8 @@ class PageController extends Controller
 
     // Helper untuk membatasi data chart agar tidak terlalu ramai
     private function processChartData($collection, $keyName) {
-        $top = $collection->take(10);
-        $othersCount = $collection->slice(10)->sum('total');
+        $top = $collection->take(35);
+        $othersCount = $collection->slice(35)->sum('total');
         
         $labels = $top->pluck($keyName)->toArray();
         $values = $top->pluck('total')->toArray();
