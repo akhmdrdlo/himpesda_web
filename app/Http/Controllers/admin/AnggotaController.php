@@ -22,7 +22,8 @@ class AnggotaController extends Controller
     {
         $user = Auth::user();
         // berikan query yang dimana levelnya anggota DAN status_pengajuan active
-        $query = User::where('level', 'anggota')->where('status_pengajuan', 'active');
+        $query = User::whereIn('level', ['anggota', 'operator_daerah', 'bendahara_daerah'])
+                 ->where('status_pengajuan', 'active');
 
         // Filter Wilayah untuk Staff Daerah
         if (in_array($user->level, ['operator_daerah', 'bendahara_daerah'])) {

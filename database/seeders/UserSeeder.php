@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
     private $dataKetua = [
         'DKI JAKARTA' => ['nama' => 'Rizali, S.T., M.T.', 'gol' => 'IV/a', 'jabatan' => 'Pengelola SDA Ahli Madya', 'unit' => 'BBWS Ciliwung Cisadane'],
         'BANTEN' => ['nama' => 'Mahar Himawan, ST, MSc', 'gol' => 'IV/a', 'jabatan' => 'Pengelola SDA Ahli Madya', 'unit' => 'BBWS Cidanau Ciujung Cidurian'],
-        'DI YOGYAKARTA' => ['nama' => 'Ir. Sahril, Sp.PSDA.', 'gol' => 'IV/b', 'jabatan' => 'Pengelola SDA Ahli Madya', 'unit' => 'BBWS Serayu Opak'],
+        'DAERAH ISTIMEWA YOGYAKARTA' => ['nama' => 'Ir. Sahril, Sp.PSDA.', 'gol' => 'IV/b', 'jabatan' => 'Pengelola SDA Ahli Madya', 'unit' => 'BBWS Serayu Opak'],
         'JAWA TENGAH' => ['nama' => 'Cecep Muhtaj Munajat, S.T., MPSDA', 'gol' => 'IV/a', 'jabatan' => 'Pengelola SDA Ahli Madya', 'unit' => 'BBWS Pemali Juana'],
         'JAWA TIMUR' => ['nama' => 'Dr. Indah Kusuma Hidayati, S.T., M.T.', 'gol' => 'IV/b', 'jabatan' => 'Pengelola SDA Ahli Madya', 'unit' => 'BBWS Brantas'],
         'JAWA BARAT' => ['nama' => 'Dendy Harry Utama, ST., MT.', 'gol' => 'IV/a', 'jabatan' => 'Pengelola SDA Ahli Madya', 'unit' => 'BBWS Citarum'],

@@ -26,7 +26,7 @@ class PageController extends Controller
         $xPost = Berita::where('kategori', 7)->latest('published_at')->first();
         // --- Bagian Statistik Anggota ---
         
-        $jumlahAnggota = User::where('level', 'anggota')->count(); 
+        $jumlahAnggota = User::whereIn('level', ['anggota', 'operator_daerah', 'bendahara_daerah'])->count(); 
         $jumlahAnggotaPusat = User::where('tipe_anggota', 'pusat')->where('level', 'anggota')->count();
         $jumlahAnggotaDaerah = User::where('tipe_anggota', 'daerah')->where('level', 'anggota')->count();
 
@@ -78,8 +78,8 @@ class PageController extends Controller
 
     // Helper untuk membatasi data chart agar tidak terlalu ramai
     private function processChartData($collection, $keyName) {
-        $top = $collection->take(5);
-        $othersCount = $collection->slice(5)->sum('total');
+        $top = $collection->take(10);
+        $othersCount = $collection->slice(10)->sum('total');
         
         $labels = $top->pluck($keyName)->toArray();
         $values = $top->pluck('total')->toArray();

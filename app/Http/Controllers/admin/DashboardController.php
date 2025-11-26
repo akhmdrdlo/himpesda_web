@@ -23,9 +23,9 @@ class DashboardController extends Controller
             $organisasi = Himpunan::firstOrCreate([]);
             $provinsiList = [];
             $selectedProvinsi = $request->get('provinsi');
-            $statsQuery = User::where('level', 'anggota');
+            $statsQuery = User::whereIn('level', ['anggota', 'operator_daerah', 'bendahara_daerah']);
             // --- PERBAIKAN LOGIKA STATISTIK PROVINSI ---
-            $provinsiStatsQuery = User::where('level', 'anggota');
+            $provinsiStatsQuery = User::whereIn('level', ['anggota', 'operator_daerah', 'bendahara_daerah']);
             
             if ($user->level == 'admin') {
                 $provinsiList = User::whereNotNull('provinsi')
