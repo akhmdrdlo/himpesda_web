@@ -116,9 +116,7 @@
                     <select name="level" class="focus:shadow-primary-outline text-sm leading-5.6 ease block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white p-2">
                         {{-- List semua role yang tersedia di sistem --}}
                         <option value="anggota" {{ old('level', $anggota->level) == 'anggota' ? 'selected' : '' }}>Anggota</option>
-                        <option value="operator" {{ old('level', $anggota->level) == 'operator' ? 'selected' : '' }}>Operator (Pusat)</option>
                         <option value="operator_daerah" {{ old('level', $anggota->level) == 'operator_daerah' ? 'selected' : '' }}>Operator Daerah</option>
-                        <option value="bendahara" {{ old('level', $anggota->level) == 'bendahara' ? 'selected' : '' }}>Bendahara (Pusat)</option>
                         <option value="bendahara_daerah" {{ old('level', $anggota->level) == 'bendahara_daerah' ? 'selected' : '' }}>Bendahara Daerah</option>
                     </select>
                     <p class="text-xs text-gray-500 mt-1">Hanya Admin dan Operator Pusat yang dapat mengubah level akses.</p>
