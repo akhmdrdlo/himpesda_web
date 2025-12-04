@@ -88,6 +88,32 @@
                     </div>
                 </div>
 
+                <hr class="my-6 border-gray-200">
+                <h6 class="text-lg font-bold text-slate-700 mb-4"><i class="fas fa-map-marked-alt mr-2"></i>Informasi Kontak & Footer</h6>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Deskripsi Singkat (Footer)</label>
+                        <textarea name="deskripsi_footer" rows="2" class="w-full rounded border-gray-300 p-2 focus:ring-blue-500 focus:border-blue-500" placeholder="Kata-kata singkat yang muncul di bagian bawah website...">{{ old('deskripsi_footer', $organisasi->deskripsi_footer) }}</textarea>
+                        <p class="text-xs text-gray-500 mt-1">Jika dikosongkan, akan menggunakan default.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Email Resmi</label>
+                        <input type="email" name="email_resmi" value="{{ old('email_resmi', $organisasi->email_resmi) }}" placeholder="info@himpesda.org" class="w-full rounded border-gray-300 p-2">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Nomor Telepon / WhatsApp</label>
+                        <input type="text" name="nomor_telepon" value="{{ old('nomor_telepon', $organisasi->nomor_telepon) }}" placeholder="+62 812..." class="w-full rounded border-gray-300 p-2">
+                    </div>
+
+                    <div class="md:col-span-2">
+                        <label class="block text-sm font-bold text-gray-700 mb-2">Alamat Lengkap</label>
+                        <textarea name="alamat" rows="2" class="w-full rounded border-gray-300 p-2" placeholder="Jl. Contoh No. 123, Jakarta...">{{ old('alamat', $organisasi->alamat) }}</textarea>
+                    </div>
+                </div>
+
                 <div class="flex justify-end mt-6">
                     <a href="{{ route('admin.dashboard') }}" class="px-8 py-2 mr-2 font-bold text-gray-700 bg-gray-200 rounded-lg text-xs">Batal</a>
                     <button type="submit" class="px-8 py-2 font-bold text-white bg-blue-500 rounded-lg text-xs">Simpan Perubahan</button>

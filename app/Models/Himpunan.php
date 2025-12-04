@@ -22,5 +22,9 @@ class Himpunan extends Model
         'no_rekening',
         'nama_pemilik_rekening',
         'nominal_iuran',
+        'alamat',
+        'email_resmi',
+        'nomor_telepon',
+        'deskripsi_footer',
     ];
 }

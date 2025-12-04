@@ -158,7 +158,6 @@ class AnggotaController extends Controller
      */
     public function destroy($id)
     {
-        // FIX 2: Implementasi logika hapus yang sebenarnya
         $anggota = User::findOrFail($id);
         
         // Hapus foto jika ada

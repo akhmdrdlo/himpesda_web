@@ -43,6 +43,10 @@ class HimpunanController extends Controller
             'no_rekening' => 'nullable|string',
             'nama_pemilik_rekening' => 'nullable|string',
             'nominal_iuran' => 'required|numeric',
+            'alamat' => 'nullable|string',
+            'email_resmi' => 'nullable|email',
+            'nomor_telepon' => 'nullable|string',
+            'deskripsi_footer' => 'nullable|string', // Batasi biar gak kepanjangan
         ]);
         
         // Ambil semua data teks dari request

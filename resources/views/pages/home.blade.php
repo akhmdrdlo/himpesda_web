@@ -337,6 +337,8 @@
     
                     if(count > 50) { circleColor = '#EF4444'; radiusSize = 90000; } // Merah (Ramai)
                     else if(count > 20) { circleColor = '#F59E0B'; radiusSize = 70000; } // Kuning (Sedang)
+                    else if(count > 0) { circleColor = '#3B82F6'; radiusSize = 40000; } // Biru (Sedikit
+
     
                     // Buat Lingkaran di Peta
                     var circle = L.circle(coords, {

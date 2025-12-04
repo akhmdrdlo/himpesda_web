@@ -55,18 +55,24 @@ class AnggotaImport implements ToModel, WithHeadingRow
             $namaProvinsi = $rawExcelProvinsi;
             $tipeAnggota  = $namaProvinsi ? 'daerah' : 'pusat';
         }
-
-        // ==========================================
-        // GENERATE KTA (PER UBAHAN REQUEST)
-        // ==========================================
         
         // 1. Dapat Kode (misal: '12')
         $kodeProvinsi = KtaHelper::getCustomCode($namaProvinsi);
         
-        // 2. Generate Nomor Urut Spesifik Daerah
-        // Fungsi ini query ke DB per baris data. 
-        // Aman, karena Maatwebsite menyimpan data row-by-row.
-        $nomorKTA = KtaHelper::generateNextKta($kodeProvinsi);
+        // Ambil Kode Provinsi (Misal: 12) untuk disimpan di kolom provinsi_id
+        $kodeProvinsi = KtaHelper::getCustomCode($namaProvinsi);
+        
+        // Ambil data KTA dari Excel (Cek berbagai kemungkinan nama header)
+        // Maatwebsite otomatis mengubah header jadi snake_case (misal: "No KTA" -> "no_kta")
+        $manualKTA = $row['no_kta'] ?? $row['nomor_kta'] ?? $row['nomor_anggota'] ?? null;
+
+        if (!empty($manualKTA)) {
+            // A. JIKA DI EXCEL ADA ISINYA -> PAKAI ITU
+            $nomorKTA = $manualKTA;
+        } else {
+            // B. JIKA KOSONG (NULL) -> GENERATE OTOMATIS
+            $nomorKTA = KtaHelper::generateNextKta($kodeProvinsi);
+        }
 
         // Cek email
         if (User::where('email', $row['email'])->exists()) return null;
@@ -94,7 +100,7 @@ class AnggotaImport implements ToModel, WithHeadingRow
             // Ubah input menjadi huruf kecil dan hapus spasi berlebih
             $input = trim(strtolower($row['jenis_kelamin']));
             
-            if (in_array($input, ['laki-laki', 'laki laki', 'pria', 'l'])) {
+            if (in_array($input, ['laki - laki', 'laki laki', 'pria','Laki - laki','l'])) {
                 $jenisKelamin = 'Laki-laki';
             } elseif (in_array($input, ['perempuan', 'wanita', 'p'])) {
                 $jenisKelamin = 'Perempuan';
@@ -124,7 +130,8 @@ class AnggotaImport implements ToModel, WithHeadingRow
             // Data Wilayah
             'provinsi'       => $namaProvinsi, // Nama tetap disimpan (untuk API UI)
             'provinsi_id'    => $kodeProvinsi, // ID disesuaikan dengan kode gambar
-            'kabupaten_kota' => $row['kabupaten'] ?? $row['kota'] ?? null,
+            'kabupaten_kota' => $row['kabupaten_kota'] ?? null,
+            'gol_ruang'      => $row['gol_ruang'] ?? null,
             'nomor_anggota'  => $nomorKTA,     // KTA disesuaikan dengan kode gambar        
             'tipe_anggota'   => $tipeAnggota,
             

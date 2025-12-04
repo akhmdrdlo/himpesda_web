@@ -95,33 +95,52 @@
     </main>
 
     <footer class="bg-[var(--blue-dark)] text-gray-300 mt-16" id="footer-kontak">
+        {{-- AMBIL DATA HIMPUNAN SECARA LANGSUNG --}}
+        @php
+            $infoOrg = \App\Models\Himpunan::first();
+        @endphp
                 <div class="max-w-7xl mx-auto px-8 py-12">
             <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-                <div class="lg:col-span-2">
-                    <h3 class="text-xl font-bold text-white mb-4">
-                        <img src="{{ asset('assets/img/himpesda_logo.png') }}" class="inline h-full max-w-full transition-all duration-200 dark:hidden ease-nav-brand max-h-8" alt="main_logo" />
-                        HIMPESDA
-                    </h3>
-                    <p class="text-sm pr-8">
-                        HIMPESDA (Himpunan Profesional Pengelola Sumber Daya Air) merupakan organisasi yang mewadahi para profesional di bidang pengelolaan sumber daya air di Indonesia. Kami berkomitmen untuk meningkatkan kompetensi, memperkuat jejaring, serta mendorong kolaborasi antar anggota dalam rangka mewujudkan pengelolaan sumber daya air yang berkelanjutan dan bermanfaat bagi masyarakat. Melalui berbagai program pelatihan, seminar, dan kegiatan sosial, HIMPESDA berperan aktif dalam pengembangan keahlian, advokasi kebijakan, serta pemberdayaan anggota untuk menghadapi tantangan pengelolaan air di masa depan.
+                <div>
+                    <div class="flex items-center gap-3 mb-4">
+                        <img src="{{ asset('assets/img/himpesda_logo.png') }}" class="h-10 bg-white rounded-full p-1" alt="Logo">
+                        <h3 class="text-xl font-bold">HIMPESDA</h3>
+                    </div>
+                    <p class="text-slate-400 text-sm leading-relaxed">
+                        {{-- Gunakan deskripsi footer dari DB, atau fallback default --}}
+                        {{ $infoOrg->deskripsi_footer ?? 'Himpunan Profesional Pengelola Sumber Daya Air. Wadah bagi para profesional untuk berkarya dan berkontribusi bagi negeri.' }}
                     </p>
                 </div>
+                
+                {{-- Kolom Tautan Cepat (Tetap Sama) --}}
                 <div>
-                    <h4 class="font-semibold text-white mb-4">Tautan</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="{{ route('profil.sejarah') }}" class="hover:text-white">Profil</a></li>
-                        <li><a href="{{ route('berita.index') }}" class="hover:text-white">Berita</a></li>
-                        <li><a href="{{ route('pendaftaran.form') }}" class="hover:text-white">Keanggotaan</a></li>
-                        <li><a href="{{ route('login') }}" class="hover:text-white">Login</a></li>
+                    <h4 class="text-lg font-bold mb-4">Tautan Cepat</h4>
+                    <ul class="space-y-2 text-sm text-slate-400">
+                        <li><a href="{{ route('home') }}" class="hover:text-blue-400 transition">Beranda</a></li>
+                        <li><a href="{{ route('profil.sejarah') }}" class="hover:text-blue-400 transition">Tentang Kami</a></li>
+                        <li><a href="{{ route('berita.index') }}" class="hover:text-blue-400 transition">Berita & Artikel</a></li>
+                        <li><a href="{{ route('pendaftaran.form') }}" class="hover:text-blue-400 transition">Pendaftaran</a></li>
                     </ul>
                 </div>
+
+                {{-- Kolom Kontak (Dinamis) --}}
                 <div>
-                    <h4 class="font-semibold text-white mb-4">Kontak</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><i class="fas fa-map-marker-alt mr-2"></i>Jl. Merdeka No. 123, Jakarta</li>
-                        <li><i class="fas fa-envelope mr-2"></i>info@himpesda.org</li>
-                        <li><i class="fas fa-phone mr-2"></i>+62 844 3242 4455</li>
-                        <li><i class="fas fa-globe mr-2"></i>www.himpesda.org</li>
+                    <h4 class="text-lg font-bold mb-4">Kontak</h4>
+                    <ul class="space-y-3 text-sm text-slate-400">
+                        <li class="flex items-start gap-3">
+                            <i class="fas fa-map-marker-alt mt-1 text-blue-500"></i>
+                            <span>{{ $infoOrg->alamat ?? 'Jakarta, Indonesia' }}</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-envelope text-blue-500 w-4 text-center"></i>
+                            <span>{{ $infoOrg->email_resmi ?? 'info@himpesda.org' }}</span>
+                        </li>
+                        @if($infoOrg->nomor_telepon)
+                        <li class="flex items-center gap-3">
+                            <i class="fas fa-phone text-blue-500 w-4 text-center"></i>
+                            <span>{{ $infoOrg->nomor_telepon }}</span>
+                        </li>
+                        @endif
                     </ul>
                 </div>
                 <div>
@@ -134,8 +153,8 @@
                     </div>
                 </div>
             </div>
-            <div class="border-t border-gray-700 mt-10 pt-6 text-center text-xs text-gray-400">
-                &copy; 2025 HIMPESDA. All rights reserved.
+            <div class="border-t border-slate-800 pt-8 text-center text-sm text-slate-500">
+                &copy; {{ date('Y') }} {{ $infoOrg->nama_organisasi ?? 'HIMPESDA' }}. All rights reserved.
             </div>
         </div>
     </footer>
