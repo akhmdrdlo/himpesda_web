@@ -181,6 +181,29 @@
                                 {{ session('success') }}
                             </div>
                         @endif
+
+                        {{-- ALERT: Update Profil (Jika foto belum diupload) --}}
+                        @if(Auth::user()->status_pengajuan == 'active' && !Auth::user()->pas_foto)
+                            <div class="mb-6 p-4 border-l-4 border-orange-500 bg-orange-50 rounded-r-lg shadow-sm">
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-exclamation-triangle text-orange-500 text-xl mt-1"></i>
+                                    </div>
+                                    <div class="ml-3 w-full">
+                                        <h4 class="text-lg font-bold text-orange-800">Lengkapi Profil Anda!</h4>
+                                        <p class="text-sm text-orange-700 mt-1">
+                                            Anda belum mengunggah foto profil resmi. Kartu Tanda Anggota (KTA) Anda akan menggunakan foto default sistem. 
+                                            Segera perbarui profil untuk melengkapi data keanggotaan.
+                                        </p>
+                                        <div class="mt-4">
+                                            <a href="{{ route('admin.anggota.profile.edit') }}" class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold uppercase tracking-wide rounded-lg transition shadow-sm hover:shadow-md">
+                                                <i class="fas fa-user-edit mr-2"></i> Update Profil Sekarang
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                         
                         @if ($errors->any())
                             <div class="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg" role="alert">
@@ -206,20 +229,44 @@
 
                         {{-- 2. Status: Disetujui (Menunggu Pembayaran) --}}
                         @elseif(Auth::user()->status_pengajuan == 'awaiting_payment')
-                            <div class="p-6 border-l-4 border-blue-500 bg-blue-50">
-                                <h4 class="font-bold text-lg">Status: Menunggu Pembayaran</h4>
-                                <p class="mt-2">Pendaftaran Anda telah disetujui. Silakan lakukan pembayaran iuran keanggotaan dan unggah bukti pembayaran di bawah ini untuk mengaktifkan akun Anda.</p>
+                            
+                            {{-- LOGIKA: Bedakan antara "Baru Daftar" dan "Masa Aktif Habis" --}}
+                            {{-- Jika akun diaktifkan lebih dari 360 hari lalu (toleransi 1 tahun), dianggap Expired --}}
+                            @php
+                                $baseDate = Auth::user()->activated_at ?? Auth::user()->created_at;
+                                $isExpired = \Carbon\Carbon::parse($baseDate) < now()->subDays(360);
+                            @endphp
+
+                            @if($isExpired)
+                                {{-- TAMPILAN JIKA MASA AKTIF HABIS --}}
+                                <div class="p-6 border-l-4 border-orange-500 bg-orange-50">
+                                    <h4 class="font-bold text-lg text-orange-800"><i class="fas fa-history mr-2"></i>Masa Keanggotaan Berakhir</h4>
+                                    <p class="mt-2 text-orange-900">
+                                        Halo <strong>{{ Auth::user()->nama_lengkap }}</strong>, masa aktif keanggotaan Anda (1 Tahun) telah habis. 
+                                        Silakan lakukan <strong>Perpanjangan Keanggotaan</strong> dengan membayarkan iuran tahunan.
+                                    </p>
+                            @else
+                                {{-- TAMPILAN JIKA BARU DAFTAR --}}
+                                <div class="p-6 border-l-4 border-blue-500 bg-blue-50">
+                                    <h4 class="font-bold text-lg text-blue-800">Status: Menunggu Pembayaran</h4>
+                                    <p class="mt-2 text-blue-900">Pendaftaran Anda telah disetujui. Silakan lakukan pembayaran iuran keanggotaan dan unggah bukti pembayaran di bawah ini untuk mengaktifkan akun Anda.</p>
+                            @endif
+
                                                                 
                                 {{-- Ambil data organisasi (Pastikan dikirim dari controller atau pakai query langsung di view jika terpaksa) --}}
                                 @php
                                     $infoBayar = \App\Models\Himpunan::first();
                                 @endphp
 
-                                <div class="mt-4 p-5 bg-blue-50 border border-blue-200 rounded-lg">
-                                    <h5 class="font-bold text-blue-800 mb-2"><i class="fas fa-university mr-2"></i>Instruksi Pembayaran</h5>
-                                    <p class="text-sm text-blue-900 mb-4">Silakan transfer biaya pendaftaran/iuran ke rekening resmi berikut:</p>
+                                <div class="mt-4 p-5 bg-white border border-gray-200 rounded-lg shadow-sm">
+                                    <h5 class="font-bold text-slate-800 mb-2"><i class="fas fa-university mr-2 text-blue-500"></i>Instruksi Pembayaran</h5>
+                                    @if($isExpired)
+                                        <p class="text-sm text-gray-600 mb-4">Transfer biaya perpanjangan ke rekening berikut:</p>
+                                    @else
+                                        <p class="text-sm text-gray-600 mb-4">Silakan transfer biaya pendaftaran/iuran ke rekening resmi berikut:</p>
+                                    @endif
                                     
-                                    <div class="bg-white p-4 rounded border border-blue-100 shadow-sm">
+                                    <div class="bg-slate-50 p-4 rounded border border-slate-200">
                                         <p class="text-xs text-gray-500 uppercase font-bold">Bank Tujuan</p>
                                         <p class="text-lg font-bold text-slate-800">{{ $infoBayar->nama_bank ?? 'Bank Belum Diatur' }}</p>
                                         
@@ -246,8 +293,12 @@
                                         <input type="file" name="file_bukti" id="file_bukti" class="mt-1 block w-full text-sm text-gray-900 border border-gray-300 rounded-lg cursor-pointer bg-gray-50 focus:outline-none" required>
                                     </div>
                                     <div class="mt-4">
-                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700">
-                                            Kirim Bukti
+                                        <button type="submit" class="inline-flex items-center px-4 py-2 bg-blue-600 border border-transparent rounded-md font-semibold text-xs text-white uppercase tracking-widest hover:bg-blue-700 shadow-md">
+                                            @if($isExpired)
+                                                Kirim Bukti Perpanjangan
+                                            @else
+                                                Kirim Bukti Pembayaran
+                                            @endif
                                         </button>
                                     </div>
                                 </form>
@@ -272,10 +323,23 @@
                         
                         {{-- 5. Status: Ditolak (Data Diri Tidak Valid) --}}
                         @elseif(Auth::user()->status_pengajuan == 'rejected')
-                            <div class="p-6 border-l-4 border-red-500 bg-red-50">
-                                <h4 class="font-bold text-lg text-red-700">Status: Ditolak</h4>
-                                <p class="mt-2">Mohon maaf, pengajuan Anda ditolak oleh admin.</p>
-                            </div>
+    <div class="p-6 border-l-4 border-red-500 bg-red-50">
+        <h4 class="font-bold text-lg text-red-700">Status: Pengajuan Ditolak / Perlu Perbaikan</h4>
+        <p class="mt-2 text-red-800">Mohon maaf, pengajuan Anda belum dapat kami setujui saat ini.</p>
+        
+        <div class="mt-4 p-4 bg-white border border-red-200 rounded-lg">
+            <p class="text-xs font-bold text-red-500 uppercase tracking-wide">Alasan Penolakan</p>
+            <p class="text-gray-800 mt-1 font-medium">{{ Auth::user()->catatan_admin ?? 'Tidak ada catatan specifk.' }}</p>
+        </div>
+
+        <p class="mt-4 text-sm text-gray-700">Silakan perbaiki data/dokumen Anda sesuai catatan di atas, lalu simpan kembali profil Anda untuk mengajukan ulang.</p>
+        
+        <div class="mt-5">
+            <a href="{{ route('admin.profile.edit') }}" class="inline-flex items-center px-5 py-2.5 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-md transition-all">
+                <i class="fas fa-edit mr-2"></i> Perbaiki Data Pendaftaran
+            </a>
+        </div>
+    </div>
                         @endif
                     </div>
                 </div>

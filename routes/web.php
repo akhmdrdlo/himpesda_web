@@ -77,6 +77,7 @@ Route::prefix('admin')->name('admin.')->middleware('auth')->group(function () {
     Route::get('/anggota/import', [AnggotaController::class, 'showImportForm'])->name('anggota.import.form');
     Route::get('/anggota/ekspor-kartu', [AnggotaController::class, 'eksporKartu'])->name('anggota.ekspor-kartu');
     Route::get('/anggota/{user}/cetak-kartu', [AnggotaController::class, 'cetakKartu'])->name('anggota.cetak-kartu');
+    Route::post('/anggota/{user}/generate-password', [AnggotaController::class, 'generatePassword'])->name('anggota.generate-password');
     Route::post('/anggota/import', [AnggotaController::class, 'import'])->name('anggota.import.store');
     Route::resource('anggota', AnggotaController::class);
 

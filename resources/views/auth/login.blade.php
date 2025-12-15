@@ -143,6 +143,14 @@
                     </div>
                 </div>
 
+                {{-- Notice Lupa Password --}}
+                <div class="mb-6 text-xs text-right">
+                    <p class="text-slate-500">Lupa Password?</p>
+                    <p class="text-blue-600 font-medium mt-1">
+                        Hubungi <strong>Operator Daerah</strong> Anda untuk reset password.
+                    </p>
+                </div>
+
                 <div class="text-center">
                     <button type="submit" class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-blue-600 to-blue-500 text-white font-bold text-sm shadow-lg shadow-blue-500/30 hover:shadow-blue-500/50 hover:-translate-y-0.5 transition-all duration-200">
                         Masuk ke Dashboard

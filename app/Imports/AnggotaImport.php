@@ -136,9 +136,10 @@ class AnggotaImport implements ToModel, WithHeadingRow
             'tipe_anggota'   => $tipeAnggota,
             
             // Status
+            // Status - UBAH LOGIKA: Harus verifikasi dulu
             'level'            => 'anggota',
-            'status_pengajuan' => 'active',
-            'activated_at'     => now(),
+            'status_pengajuan' => 'pending', // Ubah dari 'active' ke 'pending' agar masuk antrian verifikasi
+            'activated_at'     => null,      // Belum aktif
         ]);
     }
 }

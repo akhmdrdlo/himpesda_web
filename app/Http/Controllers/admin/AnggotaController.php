@@ -169,4 +169,28 @@ class AnggotaController extends Controller
         
         return redirect()->route('admin.anggota.index')->with('success', 'Anggota berhasil dihapus.');
     }
+
+    /**
+     * Generate Password Baru (Manual Workflow)
+     */
+    public function generatePassword(User $user)
+    {
+        // Pastikan hanya admin/operator yang bisa akses (walaupun sudah dilindungi middleware auth, extra check bagus)
+        if (!in_array(Auth::user()->level, ['admin', 'operator', 'operator_daerah'])) {
+            abort(403, 'Aksi tidak diizinkan.');
+        }
+
+        // Generate Random Password
+        $newPassword = \Illuminate\Support\Str::random(10); // Random string 10 karakter
+
+        // Update Password
+        $user->update([
+            'password' => \Illuminate\Support\Facades\Hash::make($newPassword)
+        ]);
+
+        // Return dengan pesan sukses DAN data password untuk modal
+        return redirect()->back()
+            ->with('success', 'Password berhasil direset.')
+            ->with('new_password', $newPassword);
+    }
 }

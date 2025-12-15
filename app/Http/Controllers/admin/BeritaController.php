@@ -117,7 +117,7 @@ class BeritaController extends Controller
             'kategori' => 'required|exists:categories,id',
             'konten' => 'required|string',
             'gambar' => 'nullable|image|max:2048',
-            'published_at' => 'required|date',
+            'published_at' => 'nullable|date',
         ]);
 
         $berita->judul = $validated['judul'];

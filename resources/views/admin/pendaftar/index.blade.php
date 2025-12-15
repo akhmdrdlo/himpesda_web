@@ -167,45 +167,146 @@
 
 </div>
 
-{{-- Modal untuk Alasan Penolakan Data --}}
-<div x-data="{ show: false, actionUrl: '', userName: '' }" x-show="show" x-on:open-data-reject-modal.window="show = true; actionUrl = $event.detail.action; userName = $event.detail.name" x-on:keydown.escape.window="show = false" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none; background-color: rgba(0, 0, 0, 0.5);">
-    <div @click.away="show = false" class="relative w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
-        <h3 class="text-lg font-medium text-gray-900">Tolak Pendaftar: <span x-text="userName"></span></h3>
-        <p class="mt-1 text-sm text-gray-600">Anda harus memberikan alasan penolakan. Status anggota akan diubah menjadi "Ditolak".</p>
-        <form :action="actionUrl" method="POST" class="mt-4">
-            @csrf
-            @method('PATCH')
-            <div>
-                <label for="catatan_penolakan_data" class="block text-sm font-medium text-gray-700">Alasan Penolakan Data</label>
-                <textarea name="catatan_penolakan" id="catatan_penolakan_data" rows="3" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm sm:text-sm" placeholder="Contoh: Data NIP tidak valid, Pas Foto tidak sesuai." required></textarea>
+@push('modals')
+{{-- Modal untuk Alasan Penolakan Data (Side Drawer) --}}
+<div x-data="{ show: false, actionUrl: '', userName: '' }" 
+     x-show="show" 
+     x-on:open-data-reject-modal.window="show = true; actionUrl = $event.detail.action; userName = $event.detail.name" 
+     x-on:keydown.escape.window="show = false"
+     class="fixed inset-0 flex justify-end"
+     style="z-index: 99999 !important; display: none;">
+    
+    {{-- Backdrop --}}
+    <div x-show="show" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="show = false" 
+         class="fixed inset-0 bg-black/50 transition-opacity"></div>
+
+    {{-- Drawer Panel --}}
+    <div x-show="show"
+         x-transition:enter="transform transition ease-in-out duration-300 sm:duration-500"
+         x-transition:enter-start="translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transform transition ease-in-out duration-300 sm:duration-500"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="translate-x-full"
+         class="relative w-full max-w-sm bg-white shadow-2xl flex flex-col h-full pointer-events-auto">
+        
+        <div class="px-6 py-6 border-b border-gray-100 flex items-center justify-between bg-red-50">
+            <h3 class="text-lg font-bold text-red-700">Tolak Permohonan</h3>
+            <button @click="show = false" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="p-6 flex-1 overflow-y-auto">
+            <div class="mb-4 p-4 bg-red-50 rounded-lg border border-red-100">
+                <p class="font-semibold text-sm text-red-800">Menolak Pendaftar:</p>
+                <p class="text-lg font-bold text-gray-900" x-text="userName"></p>
             </div>
-            <div class="mt-6 flex justify-end space-x-3">
-                <button type="button" @click="show = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">Tolak Pendaftar</button>
-            </div>
-        </form>
+            
+            <p class="text-sm text-gray-600 mb-6">
+                Tindakan ini akan mengubah status pendaftar menjadi <span class="font-bold text-red-600">Ditolak</span>. 
+                Mohon berikan alasan yang jelas agar pendaftar dapat memperbaiki datanya.
+            </p>
+
+            <form :action="actionUrl" method="POST" id="rejectDataForm">
+                @csrf
+                @method('PATCH')
+                <div class="space-y-2">
+                    <label for="catatan_penolakan_data" class="block text-sm font-bold text-gray-700">Alasan Penolakan <span class="text-red-500">*</span></label>
+                    <textarea name="catatan_penolakan" id="catatan_penolakan_data" rows="6" 
+                              class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-3" 
+                              placeholder="Contoh: Foto tidak terlihat jelas, NIP tidak sesuai format, dll..." required></textarea>
+                </div>
+            </form>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+             <button type="button" @click="show = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 shadow-sm">
+                Batal
+            </button>
+            <button type="submit" form="rejectDataForm" class="px-4 py-2 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-md">
+                Tolak Data
+            </button>
+        </div>
     </div>
 </div>
 
-{{-- Modal untuk Alasan Penolakan Pembayaran --}}
-<div x-data="{ show: false, actionUrl: '', userName: '' }" x-show="show" x-on:open-payment-reject-modal.window="show = true; actionUrl = $event.detail.action; userName = $event.detail.name" x-on:keydown.escape.window="show = false" class="fixed inset-0 z-50 flex items-center justify-center p-4" style="display: none; background-color: rgba(0, 0, 0, 0.5);">
-    <div @click.away="show = false" class="relative w-full max-w-md p-6 bg-white rounded-lg shadow-xl">
-        <h3 class="text-lg font-medium text-gray-900">Tolak Pembayaran: <span x-text="userName"></span></h3>
-        <p class="mt-1 text-sm text-gray-600">Anda harus memberikan alasan penolakan. Status anggota akan dikembalikan ke "Menunggu Pembayaran".</p>
-        <form :action="actionUrl" method="POST" class="mt-4">
-            @csrf
-            @method('PATCH')
-            <div>
-                <label for="catatan_penolakan_bayar" class="block text-sm font-medium text-gray-700">Alasan Penolakan Pembayaran</label>
-                <textarea name="catatan_penolakan" id="catatan_penolakan_bayar" rows="3" class="block w-full mt-1 border-gray-300 rounded-md shadow-sm sm:text-sm" placeholder="Contoh: Bukti transfer tidak jelas/terpotong. Harap unggah ulang." required></textarea>
+{{-- Modal untuk Alasan Penolakan Pembayaran (Side Drawer) --}}
+<div x-data="{ show: false, actionUrl: '', userName: '' }" 
+     x-show="show" 
+     x-on:open-payment-reject-modal.window="show = true; actionUrl = $event.detail.action; userName = $event.detail.name" 
+     x-on:keydown.escape.window="show = false"
+     class="fixed inset-0 flex justify-end"
+     style="z-index: 99999 !important; display: none;">
+
+    {{-- Backdrop --}}
+    <div x-show="show" 
+         x-transition:enter="transition ease-out duration-300"
+         x-transition:enter-start="opacity-0"
+         x-transition:enter-end="opacity-100"
+         x-transition:leave="transition ease-in duration-200"
+         x-transition:leave-start="opacity-100"
+         x-transition:leave-end="opacity-0"
+         @click="show = false" 
+         class="fixed inset-0 bg-black/50 transition-opacity"></div>
+
+    {{-- Drawer Panel --}}
+    <div x-show="show"
+         x-transition:enter="transform transition ease-in-out duration-300 sm:duration-500"
+         x-transition:enter-start="translate-x-full"
+         x-transition:enter-end="translate-x-0"
+         x-transition:leave="transform transition ease-in-out duration-300 sm:duration-500"
+         x-transition:leave-start="translate-x-0"
+         x-transition:leave-end="translate-x-full"
+         class="relative w-full max-w-sm bg-white shadow-2xl flex flex-col h-full pointer-events-auto">
+        
+        <div class="px-6 py-6 border-b border-gray-100 flex items-center justify-between bg-red-50">
+            <h3 class="text-lg font-bold text-red-700">Tolak Pembayaran</h3>
+             <button @click="show = false" class="text-gray-400 hover:text-gray-500 focus:outline-none">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <div class="p-6 flex-1 overflow-y-auto">
+            <div class="mb-4 p-4 bg-red-50 rounded-lg border border-red-100">
+                <p class="font-semibold text-sm text-red-800">Menolak Pembayaran:</p>
+                <p class="text-lg font-bold text-gray-900" x-text="userName"></p>
             </div>
-            <div class="mt-6 flex justify-end space-x-3">
-                <button type="button" @click="show = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300">Batal</button>
-                <button type="submit" class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">Tolak Pembayaran</button>
-            </div>
-        </form>
+
+            <p class="text-sm text-gray-600 mb-6">
+                Status anggota akan dikembalikan ke <span class="font-bold text-orange-600">Menunggu Pembayaran</span> dan pendaftar akan diminta mengunggah ulang bukti bayar.
+            </p>
+
+            <form :action="actionUrl" method="POST" id="rejectPaymentForm">
+                @csrf
+                @method('PATCH')
+                <div class="space-y-2">
+                    <label for="catatan_penolakan_bayar" class="block text-sm font-bold text-gray-700">Alasan Penolakan <span class="text-red-500">*</span></label>
+                    <textarea name="catatan_penolakan" id="catatan_penolakan_bayar" rows="6" 
+                              class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-red-500 focus:ring-red-500 sm:text-sm p-3" 
+                              placeholder="Contoh: Bukti transfer buram, Nominal tidak sesuai, dll..." required></textarea>
+                </div>
+            </form>
+        </div>
+
+        <div class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-3">
+            <button type="button" @click="show = false" class="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 shadow-sm">
+                Batal
+            </button>
+            <button type="submit" form="rejectPaymentForm" class="px-4 py-2 text-sm font-bold text-white bg-red-600 rounded-lg hover:bg-red-700 shadow-md">
+                Tolak Pembayaran
+            </button>
+        </div>
     </div>
 </div>
+@endpush
 @endsection
 
 @push('scripts')
@@ -238,7 +339,7 @@
 
     // Fungsi untuk modal penolakan data
     function openDataRejectModal(userId, userName) {
-        const url = `{{ url('admin/verifikasi-anggota/reject-data') }}/${userId}`;
+        const url = `{{ url('admin/verifikasi/reject-data') }}/${userId}`;
         window.dispatchEvent(new CustomEvent('open-data-reject-modal', { 
             detail: { action: url, name: userName } 
         }));
@@ -246,7 +347,7 @@
 
     // Fungsi untuk modal penolakan pembayaran
     function openPaymentRejectModal(pembayaranId, userName) {
-        const url = `{{ url('admin/verifikasi-anggota/reject-payment') }}/${pembayaranId}`;
+        const url = `{{ url('admin/verifikasi/reject-payment') }}/${pembayaranId}`;
         window.dispatchEvent(new CustomEvent('open-payment-reject-modal', { 
             detail: { action: url, name: userName } 
         }));

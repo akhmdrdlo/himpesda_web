@@ -26,9 +26,16 @@ class PageController extends Controller
         $xPost = Berita::where('kategori', 7)->latest('published_at')->first();
         // --- Bagian Statistik Anggota ---
         
-        $jumlahAnggota = User::whereIn('level', ['anggota', 'operator_daerah', 'bendahara_daerah'])->count(); 
-        $jumlahAnggotaPusat = User::where('tipe_anggota', 'pusat')->where('level', 'anggota')->count();
-        $jumlahAnggotaDaerah = User::where('tipe_anggota', 'daerah')->where('level', 'anggota')->count();
+        // --- Bagian Statistik Anggota ---
+        $stats = User::selectRaw("
+            count(case when level IN ('anggota', 'operator_daerah', 'bendahara_daerah') then 1 end) as jumlahAnggota,
+            count(case when tipe_anggota = 'pusat' AND level = 'anggota' then 1 end) as jumlahAnggotaPusat,
+            count(case when tipe_anggota = 'daerah' AND level = 'anggota' then 1 end) as jumlahAnggotaDaerah
+        ")->first();
+
+        $jumlahAnggota = $stats->jumlahAnggota ?? 0;
+        $jumlahAnggotaPusat = $stats->jumlahAnggotaPusat ?? 0;
+        $jumlahAnggotaDaerah = $stats->jumlahAnggotaDaerah ?? 0;
 
         // --- DATA STATISTIK UNTUK CHART ---
         // 1. Jenis Kelamin
@@ -37,29 +44,45 @@ class PageController extends Controller
             ->groupBy('jenis_kelamin')
             ->pluck('total', 'jenis_kelamin');
 
-        // 2. Unit Kerja (Top 5 + Lainnya)
-        $unitRaw = User::select('unit_kerja', DB::raw('count(*) as total'))
-            ->whereNotNull('unit_kerja')
-            ->groupBy('unit_kerja')
-            ->orderByDesc('total')
-            ->get();
-        $unitData = $this->processChartData($unitRaw, 'unit_kerja');
+        // Helper private untuk optimasi chart
+        $getChartData = function($column) {
+            // Ambil Top 35
+            $top = User::select($column, DB::raw('count(*) as total'))
+                ->whereNotNull($column)
+                ->where($column, '!=', '')
+                ->groupBy($column)
+                ->orderByDesc('total')
+                ->limit(35)
+                ->get();
+            
+            // Hitung total keseluruhan record yg tidak null
+            $totalAll = User::whereNotNull($column)->where($column, '!=', '')->count();
+            
+            // Hitung total yg ada di top 35
+            $totalTop = $top->sum('total');
+            
+            // Sisanya masuk 'Lainnya'
+            $othersCount = $totalAll - $totalTop;
+            
+            $labels = $top->pluck($column)->toArray();
+            $values = $top->pluck('total')->toArray();
+            
+            if ($othersCount > 0) {
+                $labels[] = 'Lainnya';
+                $values[] = $othersCount;
+            }
+            
+            return ['labels' => $labels, 'values' => $values];
+        };
 
-        // 3. Provinsi (Top 5 + Lainnya)
-        $provinsiRaw = User::select('provinsi', DB::raw('count(*) as total'))
-            ->whereNotNull('provinsi')
-            ->groupBy('provinsi')
-            ->orderByDesc('total')
-            ->get();
-        $provinsiData = $this->processChartData($provinsiRaw, 'provinsi');
+        // 2. Unit Kerja
+        $unitData = $getChartData('unit_kerja');
+
+        // 3. Provinsi
+        $provinsiData = $getChartData('provinsi');
 
         // 4. Jabatan Fungsional
-        $jabatanRaw = User::select('jabatan_fungsional', DB::raw('count(*) as total'))
-            ->whereNotNull('jabatan_fungsional')
-            ->groupBy('jabatan_fungsional')
-            ->orderByDesc('total')
-            ->get();
-        $jabatanData = $this->processChartData($jabatanRaw, 'jabatan_fungsional');
+        $jabatanData = $getChartData('jabatan_fungsional');
         return view('pages.home', compact(
             'himpunan',
             'beritaTerbaru',

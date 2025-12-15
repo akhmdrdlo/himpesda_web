@@ -46,9 +46,19 @@
         {{-- PDF Viewer Container --}}
         <div class="max-w-4xl mx-auto bg-white dark:bg-gray-800 p-2 rounded-lg shadow-lg h-[85vh]">
             @if($document->public_url)
-                <iframe src="{{ $document->public_url }}" class="w-full h-full border-0 rounded-md" frameborder="0">
-                    Memuat pratinjau dokumen...
-                </iframe>
+                @php
+                    $url = $document->public_url;
+        
+                    if (str_contains($url, 'drive.google.com')) {
+                        // Ekstrak file ID dari URL Google Drive
+                        if (preg_match('/\/d\/(.*?)\//', $url, $matches)) {
+                            $fileId = $matches[1];
+                            $url = "https://drive.google.com/file/d/{$fileId}/preview";
+                        }
+                    }
+                @endphp
+        
+                <iframe src="{{ $url }}" class="w-full h-full border-0 rounded-md" allowfullscreen></iframe>
             @else
                 <div class="flex items-center justify-center h-full text-gray-500">
                     <p>Dokumen belum tersedia. Silakan unggah melalui panel admin.</p>

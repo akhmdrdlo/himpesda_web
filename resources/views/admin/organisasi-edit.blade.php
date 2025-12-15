@@ -25,11 +25,15 @@
                     <div class="space-y-4">
                         <div>
                             <label for="profil_singkat" class="block font-bold text-xs text-slate-700">Profil Singkat</label>
-                            <textarea name="profil_singkat" rows="10" class="ckeditor-instance w-full rounded-lg border-gray-300" required>{{ old('profil_singkat', $organisasi->profil_singkat) }}</textarea>
+                            <div class="prose max-w-none">
+                                <textarea name="profil_singkat" rows="10" class="ckeditor-instance w-full rounded-lg border-gray-300" required>{{ old('profil_singkat', $organisasi->profil_singkat) }}</textarea>
+                            </div>
                         </div>
                         <div>
                             <label for="sejarah_singkat" class="block font-bold text-xs text-slate-700">Sejarah Singkat</label>
-                            <textarea name="sejarah_singkat" rows="10" class="ckeditor-instance w-full rounded-lg border-gray-300" required>{{ old('sejarah_singkat', $organisasi->sejarah_singkat) }}</textarea>
+                            <div class="prose max-w-none">
+                                <textarea name="sejarah_singkat" rows="10" class="ckeditor-instance w-full rounded-lg border-gray-300" required>{{ old('sejarah_singkat', $organisasi->sejarah_singkat) }}</textarea>
+                            </div>
                         </div>
                          <div>
                             <label for="nama_ketua" class="block font-bold text-xs text-slate-700">Nama Ketua Saat Ini</label>
@@ -49,11 +53,15 @@
                     <div class="space-y-4">
                         <div>
                             <label for="visi" class="block font-bold text-xs text-slate-700">Visi</label>
-                            <textarea name="visi" rows="10" class="ckeditor-instance w-full rounded-lg border-gray-300" required>{{ old('visi', $organisasi->visi) }}</textarea>
+                            <div class="prose max-w-none">
+                                <textarea name="visi" rows="10" class="ckeditor-instance w-full rounded-lg border-gray-300" required>{{ old('visi', $organisasi->visi) }}</textarea>
+                            </div>
                         </div>
                         <div>
                             <label for="misi" class="block font-bold text-xs text-slate-700">Misi</label>
-                            <textarea name="misi" rows="10" class="ckeditor-instance w-full rounded-lg border-gray-300" required>{{ old('misi', $organisasi->misi) }}</textarea>
+                            <div class="prose max-w-none">
+                                <textarea name="misi" rows="10" class="ckeditor-instance w-full rounded-lg border-gray-300" required>{{ old('misi', $organisasi->misi) }}</textarea>
+                            </div>
                         </div>
                         <div>
                             <label for="gambar_struktur_organisasi" class="block font-bold text-xs text-slate-700">Ganti Gambar Struktur (Opsional)</label>

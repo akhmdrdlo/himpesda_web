@@ -74,8 +74,9 @@
 <body class="min-h-screen">
 
     @php
-        $createdAt = \Carbon\Carbon::parse($user->activated_at ?? $user->created_at);
-        $expiryDate = "31 Des " . ($createdAt->year + 3);
+        $baseDate = \Carbon\Carbon::parse($user->activated_at ?? $user->created_at);
+        // Masa berlaku 1 tahun dari tanggal aktivasi/pendaftaran
+        $expiryDate = $baseDate->copy()->addYear()->format('d F Y');
 
         $isPusat = in_array($user->level, ['admin', 'operator', 'bendahara']) || $user->tipe_anggota == 'pusat';
         $cabangText = $isPusat ? 'PUSAT (NASIONAL)' : strtoupper($user->provinsi ?? 'DAERAH');

@@ -40,13 +40,26 @@ class DashboardController extends Controller
             }
 
             // ... (Statistik Gender, Status, Jabatan tetap sama) ...
-            $jumlahLaki = (clone $statsQuery)->where('jenis_kelamin', 'Laki-laki')->count();
-            $jumlahPerempuan = (clone $statsQuery)->where('jenis_kelamin', 'Perempuan')->count();
-            $anggotaAktif = (clone $statsQuery)->where('status_pengajuan', 'active')->count();
-            $anggotaTidakAktif = (clone $statsQuery)->whereIn('status_pengajuan', ['pending', 'awaiting_payment', 'payment_review', 'rejected'])->count();
+            // --- PERBAIKAN: Single Query Aggregation ---
+            $aggregatedStats = (clone $statsQuery)
+                ->selectRaw("
+                    count(case when jenis_kelamin = 'Laki-laki' then 1 end) as jumlahLaki,
+                    count(case when jenis_kelamin = 'Perempuan' then 1 end) as jumlahPerempuan,
+                    count(case when status_pengajuan = 'active' then 1 end) as anggotaAktif,
+                    count(case when status_pengajuan IN ('pending', 'awaiting_payment', 'payment_review', 'rejected') then 1 end) as anggotaTidakAktif
+                ")
+                ->first();
+
+            $jumlahLaki = $aggregatedStats->jumlahLaki ?? 0;
+            $jumlahPerempuan = $aggregatedStats->jumlahPerempuan ?? 0;
+            $anggotaAktif = $aggregatedStats->anggotaAktif ?? 0;
+            $anggotaTidakAktif = $aggregatedStats->anggotaTidakAktif ?? 0;
+
             $jabatanStats = (clone $statsQuery)
                 ->whereNotNull('jabatan_fungsional')->where('jabatan_fungsional', '!=', '')
-                ->groupBy('jabatan_fungsional')->select('jabatan_fungsional', DB::raw('count(*) as total'))
+                ->groupBy('jabatan_fungsional')
+                ->select('jabatan_fungsional', DB::raw('count(*) as total'))
+                ->orderBy('total', 'desc') // Optimization: Sort by DB
                 ->get();
             $jabatanLabels = $jabatanStats->pluck('jabatan_fungsional');
             $jabatanCounts = $jabatanStats->pluck('total');
@@ -56,7 +69,8 @@ class DashboardController extends Controller
                 ->whereNotNull('provinsi')->where('provinsi', '!=', '')
                 ->groupBy('provinsi')
                 ->select('provinsi', DB::raw('count(*) as total'))
-                ->orderBy(DB::raw('count(*)'), 'desc') 
+                ->orderBy('total', 'desc') 
+                ->limit(35) // Optimization: Limit results
                 ->get();
             
             $provinsiLabels = $provinsiStats->pluck('provinsi');

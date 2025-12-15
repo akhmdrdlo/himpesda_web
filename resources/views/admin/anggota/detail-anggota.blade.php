@@ -32,6 +32,53 @@
     </div>
     @endif
 
+    {{-- MODAL PASSWORD BARU (Compact & Fixed Z-Index) --}}
+    @if(session('new_password'))
+        @push('modals')
+        <div x-data="{ show: true, password: '{{ session('new_password') }}' }" 
+             x-show="show" 
+             style="display: none;"
+             class="fixed inset-0 z-[99999] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+            
+            <div class="bg-white rounded-xl shadow-2xl w-50 max-w-sm overflow-hidden transform transition-all"
+                 @click.away="show = false"
+                 x-transition:enter="ease-out duration-300"
+                 x-transition:enter-start="opacity-0 scale-95"
+                 x-transition:enter-end="opacity-100 scale-100">
+                
+                {{-- Header Compact --}}
+                <div class="bg-gradient-to-r from-orange-500 to-yellow-500 px-6 py-4 flex items-center justify-between">
+                    <h3 class="text-white font-bold text-lg"><i class="fas fa-key mr-2"></i> Password Baru</h3>
+                    <button @click="show = false" class="text-orange-100 hover:text-white transition-colors">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+
+                <div class="p-6">
+                    <p class="text-sm text-gray-500 mb-4 text-center">
+                        Password ini hanya tampil <strong>SATU KALI</strong>.
+                    </p>
+                    
+                    {{-- Password Display --}}
+                    <div class="bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg p-3 mb-4 text-center group hover:border-orange-300 transition-colors relative">
+                        <span x-text="password" class="font-mono text-xl font-bold text-slate-800 tracking-wider"></span>
+                    </div>
+
+                    {{-- Action Button --}}
+                    <button @click="navigator.clipboard.writeText(password); $el.innerHTML = '<i class=\'fas fa-check mr-2\'></i> Tersalin!'" 
+                            class="w-full py-2.5 px-4 bg-slate-800 hover:bg-slate-900 text-white text-sm font-bold rounded-lg shadow transform active:scale-95 transition-all flex items-center justify-center mb-2">
+                        <i class="fas fa-copy mr-2"></i> Salin Password
+                    </button>
+                    
+                    <p class="text-[10px] text-gray-400 text-center mt-2">
+                        Infokan anggota untuk segera ganti password di profil.
+                    </p>
+                </div>
+            </div>
+        </div>
+        @endpush
+    @endif
+
     {{-- Header Detail Anggota --}}
     <div class="relative w-full mx-auto mt-6 px-6">
         <div class="relative flex flex-col flex-auto min-w-0 p-4 overflow-hidden break-words bg-white border-0 shadow-xl rounded-2xl bg-clip-border">
@@ -87,6 +134,14 @@
                                 @method('DELETE')
                                 <button type="submit" class="inline-flex items-center px-4 py-2 font-bold text-white bg-red-600 rounded-lg shadow-md text-xs hover:bg-red-700 hover:shadow-lg hover:-translate-y-px active:opacity-85">
                                     <i class="fas fa-trash mr-2"></i> Hapus
+                                </button>
+                            </form>
+                            
+                            {{-- Tombol Generate Password (Reset) --}}
+                            <form action="{{ route('admin.anggota.generate-password', $anggota->id) }}" method="POST" onsubmit="return confirm('Yakin ingin mereset password user ini? Password baru akan digenerate dan ditampilkan satu kali.');" class="inline-block">
+                                @csrf
+                                <button type="submit" class="inline-flex items-center px-4 py-2 font-bold text-white bg-orange-500 rounded-lg shadow-md text-xs hover:bg-orange-600 hover:shadow-lg hover:-translate-y-px active:opacity-85">
+                                    <i class="fas fa-key mr-2"></i> Reset Pass
                                 </button>
                             </form>
                         @endif
