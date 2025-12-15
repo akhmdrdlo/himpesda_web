@@ -140,7 +140,7 @@
                             {{-- Tombol Generate Password (Reset) --}}
                             <form action="{{ route('admin.anggota.generate-password', $anggota->id) }}" method="POST" onsubmit="return confirm('Yakin ingin mereset password user ini? Password baru akan digenerate dan ditampilkan satu kali.');" class="inline-block">
                                 @csrf
-                                <button type="submit" class="inline-flex items-center px-4 py-2 font-bold text-white bg-orange-500 rounded-lg shadow-md text-xs hover:bg-orange-600 hover:shadow-lg hover:-translate-y-px active:opacity-85">
+                                <button type="submit" class="inline-flex items-center px-4 py-2 font-bold text-white bg-slate-800 hover:bg-slate-900 rounded-lg shadow-md text-xs hover:shadow-lg hover:-translate-y-px active:opacity-85">
                                     <i class="fas fa-key mr-2"></i> Reset Pass
                                 </button>
                             </form>

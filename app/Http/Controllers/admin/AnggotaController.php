@@ -116,20 +116,26 @@ class AnggotaController extends Controller
             'tipe_anggota' => 'required|in:pusat,daerah',
             // TAMBAHAN VALIDASI LEVEL
             'level' => 'required|string|in:admin,operator,operator_daerah,bendahara,bendahara_daerah,anggota',
+            'password' => 'nullable|string|min:8', // Validasi password opsional
         ]);
 
         // Memisahkan file dari data teks
         $dataToUpdate = $request->except(['pas_foto', '_token', '_method']);
 
+        // Hapus password dari array jika tidak diisi (menggunakan filled() agar lebih robust)
+        if (!$request->filled('password')) {
+            unset($dataToUpdate['password']);
+        }
+
         // --- LOGIKA KEAMANAN LEVEL (ROLE) ---
-        // Cek apakah user yang login adalah Admin atau Operator
+        // Cek apakah user yang login adalah Admin atau Operator Pusat
         if (in_array(Auth::user()->level, ['admin', 'operator'])) {
             // Jika ya, gunakan level dari input form
             $dataToUpdate['level'] = $request->level;
         } else {
-            // Jika bukan (misal: operator daerah iseng inspect element), 
-            // kembalikan level ke level aslinya di database.
-            $dataToUpdate['level'] = $anggota->level;
+            // Jika bukan (misal: operator daerah), kembalikan level ke aslinya (abaikan input form)
+            unset($dataToUpdate['level']); // Safety cleanup
+            // $dataToUpdate['level'] = $anggota->level; // Tidak perlu set ulang jika tidak ada di array update, tapi untuk safety logic kita unset saja
         }
 
         // --- Logika Khusus untuk Tipe Anggota ---
