@@ -29,6 +29,9 @@
     </section>
 
     {{-- Hero Section (Tetap Sama / Tidak Diubah) --}}
+    @php
+        $infoOrg = \App\Models\Himpunan::first();
+    @endphp
     <section class="relative bg-slate-50 overflow-hidden">
         <div class="absolute inset-0 bg-[url('https://www.toptal.com/designers/subtlepatterns/uploads/dot-grid.png')] opacity-30"></div>
         <div class="absolute right-0 top-0 -mt-20 -mr-20 w-96 h-96 rounded-full bg-blue-100 blur-3xl opacity-50"></div>
@@ -37,14 +40,14 @@
         <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-24 lg:py-32">
             <div class="text-center max-w-3xl mx-auto">
                 <span class="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-600 text-sm font-semibold mb-6 border border-blue-100">
-                    Selamat Datang di HIMPESDA
+                    Selamat Datang di {{ $infoOrg->nama_organisasi ?? 'HIMPESDA' }}
                 </span>
                 <h1 class="text-4xl md:text-6xl font-extrabold text-slate-900 tracking-tight mb-6 leading-tight">
                     Membangun Negeri Lewat <br>
                     <span class="gradient-text">Pengelolaan Sumber Daya Air</span>
                 </h1>
                 <p class="mt-4 text-lg text-slate-600 leading-relaxed mb-10">
-                    Wadah profesional bagi para ahli dan praktisi untuk bersinergi, berinovasi, dan berkontribusi dalam keberlanjutan sumber daya air di Indonesia.
+                    {{ $infoOrg->deskripsi_footer ?? 'Wadah profesional bagi para ahli dan praktisi untuk bersinergi, berinovasi, dan berkontribusi dalam keberlanjutan sumber daya air di Indonesia.' }}
                 </p>
                 <div class="flex flex-col sm:flex-row gap-4 justify-center">
                     <a href="{{ route('pendaftaran.form') }}" class="inline-flex justify-center items-center px-8 py-4 border border-transparent text-base font-bold rounded-full text-white bg-blue-600 hover:bg-blue-700 shadow-lg hover:shadow-xl transition transform hover:-translate-y-1">
@@ -58,7 +61,7 @@
             </div>
         </div>
     </section>
-
+    
     {{-- Berita Terbaru Section --}}
     <section class="w-full bg-slate-50 py-20">
         <div class="max-w-7xl mx-auto px-6">

@@ -17,7 +17,14 @@ return Application::configure(basePath: dirname(__DIR__))
             // 'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class, // (Contoh jika Anda butuh yang lain)
         ]);
         // -------------------------------------
+
+        // Pengecualian CSRF untuk rute tertentu.
+        // Menonaktifkan CSRF untuk 'logout' mencegah error 419 (Page Expired)
+        // ketika user mencoba log out tapi sesi mereka sudah habis/kadaluarsa.
+        $middleware->validateCsrfTokens(except: [
+            'logout',
+        ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        // Exceptions default
     })->create();

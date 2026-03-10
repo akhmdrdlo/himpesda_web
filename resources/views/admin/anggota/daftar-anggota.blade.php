@@ -28,7 +28,7 @@
                     @if(in_array(auth()->user()->level, ['admin', 'operator', 'operator_daerah']))
                     <div class="space-x-2">
                         <a href="{{ route('admin.anggota.import.form') }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer hover:shadow-xs active:opacity-85">Import Excel</a>
-                        <a href="{{ route('admin.anggota.ekspor-kartu') }}" target="_blank" class="inline-block px-4 py-2 text-xs font-bold text-center text-black uppercase align-middle transition-all  border-0 rounded-lg shadow-md cursor-pointer hover:shadow-xs active:opacity-85">Ekspor Kartu</a>
+                        <a href="{{ route('admin.anggota.ekspor-kartu') }}" target="_blank" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-emerald-500 border-0 rounded-lg shadow-md cursor-pointer hover:shadow-xs active:opacity-85"><i class="fas fa-file-excel mr-1"></i> Ekspor Kartu</a>
                     </div>
                     @endif
                 </div>
@@ -44,7 +44,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse ($anggota as $item)
+                                @foreach ($anggota as $item)
                                 <tr class="bg-white border-b hover:bg-gray-50">
                                     <td class="px-6 py-4">
                                         <div class="flex items-center">
@@ -69,11 +69,7 @@
                                         <a href="{{ route('admin.anggota.show', $item->id) }}" class="inline-block px-4 py-2 text-xs font-bold text-center text-white uppercase align-middle transition-all bg-blue-500 border-0 rounded-lg shadow-md cursor-pointer hover:shadow-xs active:opacity-85">Detail</a>
                                     </td>
                                 </tr>
-                                @empty
-                                <tr>
-                                    <td colspan="4" class="p-4 text-center">Belum ada data anggota yang terdaftar.</td>
-                                </tr>
-                                @endforelse
+                                @endforeach
                             </tbody>
                         </table>
                     </div>
@@ -115,33 +111,26 @@
     const cardTitle = $('#card-title');
 
     toggleBtn.on('click', function() {
-        // Sembunyikan tabel, tampilkan form
         tableContainer.addClass('hidden');
         formContainer.removeClass('hidden');
-        // Ubah teks tombol dan judul
         toggleBtn.text('Lihat Tabel');
         cardTitle.text('Formulir Import Data Anggota');
     });
 
     cancelBtn.on('click', function() {
-        // Sembunyikan form, tampilkan tabel
         formContainer.addClass('hidden');
         tableContainer.removeClass('hidden');
-        // Kembalikan teks tombol dan judul
         toggleBtn.text('Import Excel');
         cardTitle.text('Tabel Daftar Anggota');
     });
 
-    // Jika tombol 'Lihat Tabel' diklik saat form tampil
     toggleBtn.on('click', function() {
         if (!tableContainer.hasClass('hidden')) {
-            // Jika tabel sedang tampil, klik tombol akan menyembunyikan tabel dan menampilkan form
             tableContainer.addClass('hidden');
             formContainer.removeClass('hidden');
             toggleBtn.text('Lihat Tabel');
             cardTitle.text('Formulir Import Data Anggota');
         } else {
-            // Jika form sedang tampil, klik tombol akan menyembunyikan form dan menampilkan tabel
             formContainer.addClass('hidden');
             tableContainer.removeClass('hidden');
             toggleBtn.text('Import Excel');

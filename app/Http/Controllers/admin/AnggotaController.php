@@ -21,7 +21,6 @@ class AnggotaController extends Controller
     public function index()
     {
         $user = Auth::user();
-        // berikan query yang dimana levelnya anggota DAN status_pengajuan active
         $query = User::whereIn('level', ['anggota', 'operator_daerah', 'bendahara_daerah'])
                  ->where('status_pengajuan', 'active');
 
@@ -52,10 +51,7 @@ class AnggotaController extends Controller
 
     public function eksporKartu()
     {
-        // Mengambil semua user yang levelnya 'anggota'
         $users = User::where('level', 'anggota')->get();
-        
-        // Pastikan path ke view sudah benar
         return view('admin.anggota.ekspor-kartu', compact('users'));
     }
 
@@ -67,8 +63,7 @@ class AnggotaController extends Controller
         return view('admin.anggota.import-anggota');
     }
     /**
-     * MEMPROSES FILE EXCEL YANG DIUNGGAH
-     * (Method ini sudah kita buat sebelumnya, tidak perlu diubah)
+     * Memproses file excel yang diunggah.
      */
     public function import(Request $request)
     {
@@ -114,32 +109,23 @@ class AnggotaController extends Controller
             'provinsi' => 'nullable|string|max:255',
             'kabupaten_kota' => 'nullable|string|max:255',
             'tipe_anggota' => 'required|in:pusat,daerah',
-            // TAMBAHAN VALIDASI LEVEL
             'level' => 'required|string|in:admin,operator,operator_daerah,bendahara,bendahara_daerah,anggota',
-            'password' => 'nullable|string|min:8', // Validasi password opsional
+            'password' => 'nullable|string|min:8',
         ]);
 
-        // Memisahkan file dari data teks
-        $dataToUpdate = $request->except(['pas_foto', '_token', '_method']);
+        $dataToUpdate = $request->except(['pas_foto', '_token', '_method', 'password']);
 
-        // Hapus password dari array jika tidak diisi (menggunakan filled() agar lebih robust)
-        if (!$request->filled('password')) {
-            unset($dataToUpdate['password']);
+        if ($request->filled('password')) {
+            $dataToUpdate['password'] = \Illuminate\Support\Facades\Hash::make($request->password);
         }
 
-        // --- LOGIKA KEAMANAN LEVEL (ROLE) ---
-        // Cek apakah user yang login adalah Admin atau Operator Pusat
+        // Validate RBAC (Role-Based Access Control)
         if (in_array(Auth::user()->level, ['admin', 'operator'])) {
-            // Jika ya, gunakan level dari input form
             $dataToUpdate['level'] = $request->level;
         } else {
-            // Jika bukan (misal: operator daerah), kembalikan level ke aslinya (abaikan input form)
-            unset($dataToUpdate['level']); // Safety cleanup
-            // $dataToUpdate['level'] = $anggota->level; // Tidak perlu set ulang jika tidak ada di array update, tapi untuk safety logic kita unset saja
+            unset($dataToUpdate['level']); // Prevent unauthorized privilege escalation
         }
 
-        // --- Logika Khusus untuk Tipe Anggota ---
-        // Hanya admin yang bisa mengubah tipe anggota (Sesuai request sebelumnya)
         if (Auth::user()->level != 'admin') {
             $dataToUpdate['tipe_anggota'] = $anggota->tipe_anggota;
         }
@@ -181,20 +167,16 @@ class AnggotaController extends Controller
      */
     public function generatePassword(User $user)
     {
-        // Pastikan hanya admin/operator yang bisa akses (walaupun sudah dilindungi middleware auth, extra check bagus)
         if (!in_array(Auth::user()->level, ['admin', 'operator', 'operator_daerah'])) {
             abort(403, 'Aksi tidak diizinkan.');
         }
 
-        // Generate Random Password
-        $newPassword = \Illuminate\Support\Str::random(10); // Random string 10 karakter
+        $newPassword = \Illuminate\Support\Str::random(10);
 
-        // Update Password
         $user->update([
             'password' => \Illuminate\Support\Facades\Hash::make($newPassword)
         ]);
 
-        // Return dengan pesan sukses DAN data password untuk modal
         return redirect()->back()
             ->with('success', 'Password berhasil direset.')
             ->with('new_password', $newPassword);

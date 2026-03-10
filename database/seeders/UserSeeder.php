@@ -8,7 +8,7 @@ use Illuminate\Database\Seeder;
 use App\Helpers\KtaHelper;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Faker\Factory as Faker; // Import Faker untuk data palsu yg realistis
+use Faker\Factory as Faker;
 class UserSeeder extends Seeder
 {
 
@@ -59,10 +59,6 @@ class UserSeeder extends Seeder
 $passwordDefault = Hash::make('password');
         $faker = Faker::create('id_ID'); 
 
-        // ==========================================
-        // 1. PENGURUS PUSAT
-        // ==========================================
-        
         User::create([
             'nama_lengkap' => 'Super Admin HIMPESDA',
             'email' => 'superadmin@himpesda.org',
@@ -124,10 +120,6 @@ $passwordDefault = Hash::make('password');
             'asal_instansi' => 'DPP HIMPESDA',
         ]);
 
-        // ==========================================
-        // 2. LOOPING DAERAH (KETUA -> OPERATOR -> BENDAHARA)
-        // ==========================================
-        
         $mapProvinsi = KtaHelper::PROVINCE_CODE_MAP;
 
         foreach ($mapProvinsi as $namaProvinsi => $kode) {
@@ -137,10 +129,6 @@ $passwordDefault = Hash::make('password');
             $slug = Str::slug($namaProvinsi);
             $namaDisplay = ucwords(strtolower($namaProvinsi));
 
-            // -------------------------------------------
-            // A. KETUA UMUM DAERAH (Urutan: 0001)
-            // -------------------------------------------
-            // Cek apakah ada data Ketua untuk provinsi ini di array $dataKetua
             if (isset($this->dataKetua[$namaProvinsi])) {
                 $data = $this->dataKetua[$namaProvinsi];
                 

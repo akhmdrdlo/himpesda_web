@@ -106,14 +106,24 @@ Berikut adalah panduan untuk menjalankan proyek ini di lingkungan lokal mengguna
 
 8.  **Install Dependensi & Compile Aset Frontend**
     ```bash
+    ```bash
     npm install
     npm run build
-    npm run dev
     ```
 
-9. **Jalankan Aplikasi**
-    Buka Laragon, pastikan Apache dan MySQL berjalan. Akses proyek melalui URL yang dibuat otomatis:
-    **http://himpesda-web.test**
+9. **Jalankan Aplikasi (Mode Development)**
+    Anda perlu membuka **2 Terminal** berbeda agar aplikasi berjalan lancar:
+
+    *   **Terminal 1 (Backend Laravel):**
+        ```bash
+        php artisan serve
+        ```
+    *   **Terminal 2 (Frontend Vite):**
+        ```bash
+        npm run dev
+        ```
+
+    Akses aplikasi melalui browser di: **http://127.0.0.1:8000**
 
 ---
 

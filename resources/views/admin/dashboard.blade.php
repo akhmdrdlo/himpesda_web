@@ -196,7 +196,7 @@
                                             Segera perbarui profil untuk melengkapi data keanggotaan.
                                         </p>
                                         <div class="mt-4">
-                                            <a href="{{ route('admin.anggota.profile.edit') }}" class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold uppercase tracking-wide rounded-lg transition shadow-sm hover:shadow-md">
+                                            <a href="{{ route('admin.profile.edit') }}" class="inline-flex items-center px-4 py-2 bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold uppercase tracking-wide rounded-lg transition shadow-sm hover:shadow-md">
                                                 <i class="fas fa-user-edit mr-2"></i> Update Profil Sekarang
                                             </a>
                                         </div>
@@ -273,7 +273,7 @@
                                         <div class="my-2 border-t border-dashed border-gray-200"></div>
 
                                         <p class="text-xs text-gray-500 uppercase font-bold">Nomor Rekening</p>
-                                        <p class="text-xl font-mono font-black text-slate-800 tracking-wider copy-text cursor-pointer" onclick="navigator.clipboard.writeText('{{ $infoBayar->no_rekening }}'); alert('No Rekening Disalin!')">
+                                        <p class="text-xl font-mono font-black text-slate-800 tracking-wider copy-text cursor-pointer" onclick="navigator.clipboard.writeText('{{ $infoBayar->no_rekening }}')">
                                             {{ $infoBayar->no_rekening ?? '-' }} 
                                             <i class="far fa-copy text-xs text-blue-500 ml-2"></i>
                                         </p>
